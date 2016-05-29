@@ -10,9 +10,13 @@
 
 @interface GBuffer : NSObject
 
-- (id)initWithDepthEnabled:(BOOL)enabled device:(id<MTLDevice>)_device screensize:(vector_float2)sc;
+- (id)initWithDepthEnabled:(BOOL)enabled device:(id<MTLDevice>)_device screensize:(vector_float2)sc compareFunction:(MTLCompareFunction)cf clearDepth:(float)depth;
 - (MTLRenderPassDescriptor *)renderPassDescriptor;
 - (id <MTLDepthStencilState>) _depthState;
 - (void)setScreenSize:(vector_float2)sc device:(id<MTLDevice>)_device;
+
+
+@property (atomic) id<MTLTexture> depthTexture;
+@property (atomic) float clearDepth;
 
 @end

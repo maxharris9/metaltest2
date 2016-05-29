@@ -43,21 +43,27 @@ fragment float4 cubeFrag(ColorInOut in [[stage_in]],
                          texture2d<float> normals [[ texture(1) ]],
                          texture2d<float> albedo2 [[ texture(2) ]],
                          texture2d<float> normals2 [[ texture(3) ]],
-                         texture2d<float> lightData [[ texture(4) ]])
+                         texture2d<float> lightData [[ texture(4) ]],
+                         depth2d<float> depth [[ texture(5) ]],
+                         depth2d<float> depth2 [[ texture(6) ]])
 {
     constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
+//    return depth2.sample(texSampler, in.texCoord) - 0.7; //float4(depth.sample(texSampler, in.texCoord).r, 0.0, 0.0, 0.0);
+    float4 tmp = fmax(depth.sample(texSampler, in.texCoord), depth2.sample(texSampler, in.texCoord));
     
+//    return tmp/3;
+    return pow(tmp, 90) - 0.5; // fabs((tmp * -1) + 0.5); //
+
     float4 light = lightData.sample(texSampler, in.texCoord);
     
     float3 diffuse = light.rgb;
     float3 n_s = normals.sample(texSampler, in.texCoord).rgb / normals2.sample(texSampler, in.texCoord).rgb;
     float sun_diffuse = fmax(dot(n_s * 2.0 - 1.0, float3(0.0, 0.1, 0.0)), 0.0);
+
+//    diffuse += float3(0.25) * sun_diffuse;
+    diffuse += albedo2.sample(texSampler, in.texCoord).rgb + albedo.sample(texSampler, in.texCoord).rgb;
     
-    diffuse += float3(0.25) * sun_diffuse;
-    diffuse *= albedo.sample(texSampler, in.texCoord).rgb;
-    diffuse += albedo2.sample(texSampler, in.texCoord).rgb ;
-    
-    diffuse += diffuse;
+//    diffuse += diffuse;
     
     return float4(diffuse, 1.0);
 }

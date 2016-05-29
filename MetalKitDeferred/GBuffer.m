@@ -16,9 +16,10 @@
     MTLRenderPassDescriptor *_renderPassDesc;
 }
 
-- (id)initWithDepthEnabled:(BOOL)enabled device:(id<MTLDevice>)_device screensize:(vector_float2)sc
+- (id)initWithDepthEnabled:(BOOL)enabled device:(id<MTLDevice>)_device screensize:(vector_float2)sc compareFunction:(MTLCompareFunction)cf clearDepth:(float)depth
 {
     self = [super init];
+    self.clearDepth = depth;
     if (self)
     {
         screenSize = sc;
@@ -26,7 +27,7 @@
         MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
         if (enabled)
         {
-            depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
+            depthStateDesc.depthCompareFunction = cf;
         }
         else
         {
@@ -35,7 +36,7 @@
         depthStateDesc.depthWriteEnabled = enabled;
         _dState = [_device newDepthStencilStateWithDescriptor:depthStateDesc];
         
-        [self buildBufferWithDevice:_device];
+        [self buildBufferWithDevice:_device clearDepth:self.clearDepth];
     }
     return self;
 }
@@ -58,7 +59,7 @@
     color.storeAction = MTLStoreActionStore;
 }
 
-- (void)buildBufferWithDevice:(id<MTLDevice>)_device
+- (void)buildBufferWithDevice:(id<MTLDevice>)_device clearDepth:(float)depth
 {
     
     MTLTextureDescriptor *textureDesc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat: MTLPixelFormatDepth32Float
@@ -69,23 +70,34 @@
     textureDesc.storageMode = MTLStorageModePrivate;
     textureDesc.textureType = MTLTextureType2D;
     textureDesc.usage = MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead;
-    id<MTLTexture> depth_texture = [_device newTextureWithDescriptor: textureDesc];
+    self.depthTexture = [_device newTextureWithDescriptor: textureDesc];
     
     _renderPassDesc = [[MTLRenderPassDescriptor alloc] init];
     
     //albedo
     _renderPassDesc.colorAttachments[0].clearColor = MTLClearColorMake(0.f, 0.f, 0.f, 1.f);
-    [self createTextureFor:_renderPassDesc.colorAttachments[0] size:screenSize withDevice:_device format:MTLPixelFormatRGBA8Unorm];
+    [self createTextureFor:_renderPassDesc.colorAttachments[0]
+                      size:screenSize
+                withDevice:_device
+                    format:MTLPixelFormatRGBA8Unorm];
     
     //normals + linear_depth
     _renderPassDesc.colorAttachments[1].clearColor = MTLClearColorMake(0.f, 0.f, 0.f, 1.f);
-    [self createTextureFor:_renderPassDesc.colorAttachments[1] size:screenSize withDevice:_device format:MTLPixelFormatRGBA16Float];
-    
+    [self createTextureFor:_renderPassDesc.colorAttachments[1]
+                      size:screenSize
+                withDevice:_device
+                    format:MTLPixelFormatRGBA16Float];
+
     //depth
     _renderPassDesc.depthAttachment.loadAction = MTLLoadActionClear;
     _renderPassDesc.depthAttachment.storeAction = MTLStoreActionStore;
-    _renderPassDesc.depthAttachment.texture = depth_texture;
-    _renderPassDesc.depthAttachment.clearDepth = 1.0;
+    _renderPassDesc.depthAttachment.texture = self.depthTexture;
+    _renderPassDesc.depthAttachment.clearDepth = depth;
+//
+//    [self createTextureFor:_renderPassDesc.depthAttachment
+//                      size:screenSize
+//                withDevice:_device
+//                    format:MTLPixelFormatDepth32Float];
 }
 
 - (MTLRenderPassDescriptor *)renderPassDescriptor
@@ -107,7 +119,7 @@
     _renderPassDesc.depthAttachment.texture = nil;
     _renderPassDesc = nil;
     
-    [self buildBufferWithDevice:_device];
+    [self buildBufferWithDevice:_device clearDepth:self.clearDepth];
 }
 
 - (void)dealloc
