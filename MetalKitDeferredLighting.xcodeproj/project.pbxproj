@@ -7,14 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D010922A1C0F050A00A11AAE /* Light.m in Sources */ = {isa = PBXBuildFile; fileRef = D01092291C0F050A00A11AAE /* Light.m */; };
-		D010922D1C0F098A00A11AAE /* LightPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = D010922C1C0F098A00A11AAE /* LightPipeline.m */; };
-		D03F3B5B1C11AFB00034F96A /* fairy.metal in Sources */ = {isa = PBXBuildFile; fileRef = D03F3B5A1C11AFB00034F96A /* fairy.metal */; };
-		D03F3B5E1C11B18F0034F96A /* FairyPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = D03F3B5D1C11B18F0034F96A /* FairyPipeline.m */; };
-		D03F3B601C11B6C40034F96A /* assets in Resources */ = {isa = PBXBuildFile; fileRef = D03F3B5F1C11B6C40034F96A /* assets */; };
 		D090D3791C0E59BC00019855 /* Quad.m in Sources */ = {isa = PBXBuildFile; fileRef = D090D3781C0E59BC00019855 /* Quad.m */; };
-		D090D37C1C0E685300019855 /* light.metal in Sources */ = {isa = PBXBuildFile; fileRef = D090D37B1C0E685300019855 /* light.metal */; };
-		D090D37F1C0E6AD700019855 /* LightBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = D090D37E1C0E6AD700019855 /* LightBuffer.m */; };
 		D0F112B91C0E442800C9E780 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112B81C0E442800C9E780 /* AppDelegate.m */; };
 		D0F112BC1C0E442800C9E780 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112BB1C0E442800C9E780 /* main.m */; };
 		D0F112BF1C0E442800C9E780 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112BE1C0E442800C9E780 /* GameViewController.m */; };
@@ -25,7 +18,6 @@
 		D0F112DE1C0E46D500C9E780 /* GBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112DD1C0E46D500C9E780 /* GBuffer.m */; };
 		D0F112E11C0E4A0A00C9E780 /* GPipeLine.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */; };
 		D0F112E31C0E4CCB00C9E780 /* gBuffer.metal in Sources */ = {isa = PBXBuildFile; fileRef = D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */; };
-		E7DD31B11CF133F80022DE55 /* Cube.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DD31B01CF133F80022DE55 /* Cube.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,20 +31,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D01092281C0F050A00A11AAE /* Light.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Light.h; sourceTree = "<group>"; };
-		D01092291C0F050A00A11AAE /* Light.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Light.m; sourceTree = "<group>"; };
-		D010922B1C0F098A00A11AAE /* LightPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightPipeline.h; sourceTree = "<group>"; };
-		D010922C1C0F098A00A11AAE /* LightPipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LightPipeline.m; sourceTree = "<group>"; };
-		D03F3B5A1C11AFB00034F96A /* fairy.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = fairy.metal; sourceTree = "<group>"; };
-		D03F3B5C1C11B18F0034F96A /* FairyPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FairyPipeline.h; sourceTree = "<group>"; };
-		D03F3B5D1C11B18F0034F96A /* FairyPipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FairyPipeline.m; sourceTree = "<group>"; };
-		D03F3B5F1C11B6C40034F96A /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		D090D3771C0E59BC00019855 /* Quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quad.h; sourceTree = "<group>"; };
 		D090D3781C0E59BC00019855 /* Quad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Quad.m; sourceTree = "<group>"; };
 		D090D37A1C0E62A900019855 /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
-		D090D37B1C0E685300019855 /* light.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = light.metal; sourceTree = "<group>"; };
-		D090D37D1C0E6AD700019855 /* LightBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightBuffer.h; sourceTree = "<group>"; };
-		D090D37E1C0E6AD700019855 /* LightBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LightBuffer.m; sourceTree = "<group>"; };
 		D0F112B41C0E442800C9E780 /* MetalKitDeferredLighting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalKitDeferredLighting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F112B71C0E442800C9E780 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D0F112B81C0E442800C9E780 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -72,8 +53,6 @@
 		D0F112DF1C0E4A0A00C9E780 /* GPipeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPipeLine.h; sourceTree = "<group>"; };
 		D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPipeLine.m; sourceTree = "<group>"; };
 		D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = gBuffer.metal; sourceTree = "<group>"; };
-		E7DD31B01CF133F80022DE55 /* Cube.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cube.m; sourceTree = "<group>"; };
-		E7DD31B21CF134080022DE55 /* Cube.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cube.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +76,6 @@
 		D0F112AB1C0E442800C9E780 = {
 			isa = PBXGroup;
 			children = (
-				D03F3B5F1C11B6C40034F96A /* assets */,
 				D0F112B61C0E442800C9E780 /* MetalKitDeferred */,
 				D0F112D01C0E442900C9E780 /* MetalKitDeferredUITests */,
 				D0F112B51C0E442800C9E780 /* Products */,
@@ -154,8 +132,6 @@
 			children = (
 				D0F112C21C0E442800C9E780 /* SharedStructures.h */,
 				D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */,
-				D090D37B1C0E685300019855 /* light.metal */,
-				D03F3B5A1C11AFB00034F96A /* fairy.metal */,
 				D0F112C01C0E442800C9E780 /* Shaders.metal */,
 			);
 			name = shaders;
@@ -166,10 +142,6 @@
 			children = (
 				D0F112DF1C0E4A0A00C9E780 /* GPipeLine.h */,
 				D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */,
-				D010922B1C0F098A00A11AAE /* LightPipeline.h */,
-				D010922C1C0F098A00A11AAE /* LightPipeline.m */,
-				D03F3B5C1C11B18F0034F96A /* FairyPipeline.h */,
-				D03F3B5D1C11B18F0034F96A /* FairyPipeline.m */,
 			);
 			name = pipelines;
 			sourceTree = "<group>";
@@ -177,16 +149,10 @@
 		E7DD31AF1CF1327F0022DE55 /* buffers */ = {
 			isa = PBXGroup;
 			children = (
-				E7DD31B21CF134080022DE55 /* Cube.h */,
-				E7DD31B01CF133F80022DE55 /* Cube.m */,
 				D090D3771C0E59BC00019855 /* Quad.h */,
 				D090D3781C0E59BC00019855 /* Quad.m */,
-				D01092281C0F050A00A11AAE /* Light.h */,
-				D01092291C0F050A00A11AAE /* Light.m */,
 				D0F112DC1C0E46D500C9E780 /* GBuffer.h */,
 				D0F112DD1C0E46D500C9E780 /* GBuffer.m */,
-				D090D37D1C0E6AD700019855 /* LightBuffer.h */,
-				D090D37E1C0E6AD700019855 /* LightBuffer.m */,
 			);
 			name = buffers;
 			sourceTree = "<group>";
@@ -271,7 +237,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D03F3B601C11B6C40034F96A /* assets in Resources */,
 				D0F112C41C0E442800C9E780 /* Assets.xcassets in Resources */,
 				D0F112C71C0E442800C9E780 /* MainMenu.xib in Resources */,
 			);
@@ -291,20 +256,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7DD31B11CF133F80022DE55 /* Cube.m in Sources */,
-				D010922A1C0F050A00A11AAE /* Light.m in Sources */,
 				D0F112E31C0E4CCB00C9E780 /* gBuffer.metal in Sources */,
 				D0F112DE1C0E46D500C9E780 /* GBuffer.m in Sources */,
 				D0F112C11C0E442800C9E780 /* Shaders.metal in Sources */,
-				D090D37C1C0E685300019855 /* light.metal in Sources */,
 				D0F112BC1C0E442800C9E780 /* main.m in Sources */,
 				D090D3791C0E59BC00019855 /* Quad.m in Sources */,
 				D0F112BF1C0E442800C9E780 /* GameViewController.m in Sources */,
-				D010922D1C0F098A00A11AAE /* LightPipeline.m in Sources */,
-				D03F3B5E1C11B18F0034F96A /* FairyPipeline.m in Sources */,
 				D0F112B91C0E442800C9E780 /* AppDelegate.m in Sources */,
-				D03F3B5B1C11AFB00034F96A /* fairy.metal in Sources */,
-				D090D37F1C0E6AD700019855 /* LightBuffer.m in Sources */,
 				D0F112E11C0E4A0A00C9E780 /* GPipeLine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,8 +12,25 @@
 {
     BOOL _depthEnabled;
     id <MTLDepthStencilState> _dState;
+    id <MTLDepthStencilState> _dState2;
     vector_float2 screenSize;
     MTLRenderPassDescriptor *_renderPassDesc;
+}
+
+
+- (id)initWithDevice:(id<MTLDevice>)_device screensize:(vector_float2)sc clearDepth:(float)depth depthStateDescriptor:(MTLDepthStencilDescriptor*)depthStateDesc depthStateDescriptor2:(MTLDepthStencilDescriptor*)depthStateDesc2
+{
+    self = [super init];
+    self.clearDepth = depth;
+    if (self)
+    {
+        screenSize = sc;
+        _dState = [_device newDepthStencilStateWithDescriptor:depthStateDesc];
+        _dState2 = [_device newDepthStencilStateWithDescriptor:depthStateDesc2];
+        
+        [self buildBufferWithDevice:_device clearDepth:self.clearDepth];
+    }
+    return self;
 }
 
 - (id)initWithDepthEnabled:(BOOL)enabled device:(id<MTLDevice>)_device screensize:(vector_float2)sc compareFunction:(MTLCompareFunction)cf clearDepth:(float)depth
@@ -93,11 +110,30 @@
     _renderPassDesc.depthAttachment.storeAction = MTLStoreActionStore;
     _renderPassDesc.depthAttachment.texture = self.depthTexture;
     _renderPassDesc.depthAttachment.clearDepth = depth;
+    
+//    _renderPassDesc.stencilAttachment.clearStencil
+//    _renderPassDesc.stencilAttachment.
 //
 //    [self createTextureFor:_renderPassDesc.depthAttachment
 //                      size:screenSize
 //                withDevice:_device
 //                    format:MTLPixelFormatDepth32Float];
+    
+    
+    
+//    MTLTextureDescriptor *textureDescriptor2 = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatStencil8
+//                                                                                                  width:screenSize.x
+//                                                                                                 height:screenSize.y
+//                                                                                              mipmapped:NO];
+//
+//    textureDescriptor2.textureType =  MTLTextureType2D;
+//    id <MTLTexture> stencilTexture = [_device newTextureWithDescriptor: textureDescriptor2];
+    
+    MTLRenderPassStencilAttachmentDescriptor *stencilAttachment = _renderPassDesc.stencilAttachment;
+//    stencilAttachment.texture = stencilTexture;
+    stencilAttachment.loadAction = MTLLoadActionClear;
+    stencilAttachment.storeAction = MTLStoreActionDontCare;
+    stencilAttachment.clearStencil = 0;
 }
 
 - (MTLRenderPassDescriptor *)renderPassDescriptor
@@ -108,6 +144,11 @@
 - (id <MTLDepthStencilState>) _depthState
 {
     return _dState;
+}
+
+- (id <MTLDepthStencilState>) _depthState2
+{
+    return _dState2;
 }
 
 - (void)setScreenSize:(vector_float2)sc device:(id<MTLDevice>)_device

@@ -21,6 +21,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                 <autoresizingMask key="autoresizingMask"/>
             </view>
+            <point key="canvasLocation" x="-1095" y="-1263"/>
         </window>
         <viewController id="hW3-AJ-wXb" customClass="GameViewController">
             <connections>

@@ -32,7 +32,6 @@ static const float qQuadVertices[] =
     if (self)
     {
         _vertexBuffer = [_device newBufferWithBytes:qQuadVertices length:sizeof(qQuadVertices) options:MTLResourceOptionCPUCacheModeDefault];
-        
         for (int i = 0; i < 3; i++)
         {
             _quadModelMatrixBuffers[i] = [_device newBufferWithLength:sizeof(QuadMatrices) options:MTLResourceOptionCPUCacheModeDefault];

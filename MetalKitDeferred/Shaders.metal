@@ -23,7 +23,6 @@ typedef struct {
     float2 texCoord [[user(texturecoord)]];
 } ColorInOut;
 
-// Vertex shader function
 vertex ColorInOut cubeVert(device vertex_t* vertex_array [[ buffer(0) ]],
                            constant CubeMatrices& matrices [[buffer(1)]],
                            uint vid [[vertex_id]])
@@ -37,33 +36,41 @@ vertex ColorInOut cubeVert(device vertex_t* vertex_array [[ buffer(0) ]],
     return out;
 }
 
-// Fragment shader function
 fragment float4 cubeFrag(ColorInOut in [[stage_in]],
-                         texture2d<float> albedo [[ texture(0) ]],
-                         texture2d<float> normals [[ texture(1) ]],
-                         texture2d<float> albedo2 [[ texture(2) ]],
-                         texture2d<float> normals2 [[ texture(3) ]],
-                         texture2d<float> lightData [[ texture(4) ]],
-                         depth2d<float> depth [[ texture(5) ]],
-                         depth2d<float> depth2 [[ texture(6) ]])
+                         texture2d<float> boxRearAlbedo [[ texture(0) ]],
+                         texture2d<float> boxRearNormalsTexture [[ texture(1) ]],
+                         depth2d<float>   boxRearDepth [[ texture(2) ]],
+
+                         texture2d<float> cylinderRearAlbedo [[ texture(3) ]],
+                         texture2d<float> cylinderRearNormalsTexture [[ texture(4) ]],
+                         depth2d<float>   cylinderRearDepth [[ texture(5) ]],
+
+                         texture2d<float> boxFrontAlbedo [[ texture(6) ]],
+                         texture2d<float> boxFrontNormalsTexture [[ texture(7) ]],
+                         depth2d<float>   boxFrontDepth [[ texture(8) ]],
+
+                         texture2d<float> cylinderFrontAlbedo [[ texture(9) ]],
+                         texture2d<float> cylinderFrontNormalsTexture [[ texture(10) ]],
+                         depth2d<float>   cylinderFrontDepth [[ texture(11) ]])
 {
     constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
-//    return depth2.sample(texSampler, in.texCoord) - 0.7; //float4(depth.sample(texSampler, in.texCoord).r, 0.0, 0.0, 0.0);
-    float4 tmp = fmax(depth.sample(texSampler, in.texCoord), depth2.sample(texSampler, in.texCoord));
-    
-//    return tmp/3;
-    return pow(tmp, 90) - 0.5; // fabs((tmp * -1) + 0.5); //
 
-    float4 light = lightData.sample(texSampler, in.texCoord);
-    
-    float3 diffuse = light.rgb;
-    float3 n_s = normals.sample(texSampler, in.texCoord).rgb / normals2.sample(texSampler, in.texCoord).rgb;
-    float sun_diffuse = fmax(dot(n_s * 2.0 - 1.0, float3(0.0, 0.1, 0.0)), 0.0);
+    float4 black = float4(0.0,0.0,0.0,1.0);
+    float4 white = float4(1.0,1.0,1.0,1.0);
 
-//    diffuse += float3(0.25) * sun_diffuse;
-    diffuse += albedo2.sample(texSampler, in.texCoord).rgb + albedo.sample(texSampler, in.texCoord).rgb;
-    
-//    diffuse += diffuse;
-    
-    return float4(diffuse, 1.0);
+    float4 boxRear = boxRearDepth.sample(texSampler, in.texCoord);
+    float4 cylRear = cylinderRearDepth.sample(texSampler, in.texCoord);
+
+    float4 boxFront = boxFrontDepth.sample(texSampler, in.texCoord);
+    float4 cylFront = cylinderFrontDepth.sample(texSampler, in.texCoord);
+
+    float4 maskRear = (cylRear.r <= boxRear.r) ? white : cylRear;
+    float4 maskFront = (cylFront.r > boxFront.r) ? white : cylFront;
+    float4 split2 = max(maskRear, cylFront);
+    float4 newlyCut = (split2.r < 1) ? max(boxRear, cylFront) : black;
+    float4 split = min(maskFront, maskRear);
+    float4 silhouette = (split.r < 1) ? cylFront : black;
+    float4 finally = min(max(silhouette, newlyCut), maskFront);
+
+    return pow(finally, 90) - 0.6;
 }

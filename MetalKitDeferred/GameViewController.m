@@ -11,12 +11,9 @@
 
 #import "GBuffer.h"
 #import "GPipeLine.h"
-#import "LightBuffer.h"
-#import "LightPipeLine.h"
-#import "FairyPipeline.h"
-#import "Cube.h"
+
 #import "Quad.h"
-#import "Light.h"
+
 #import "math.h"
 
 // The max number of command buffers in flight
@@ -50,19 +47,15 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     
     // meshes
     MTKMesh *_boxMesh;
-    MTKMesh *_boxMesh2;
+    MTKMesh *_cylinderMesh;
     
-    GBuffer *_gBuffer;
-    GBuffer *_gBuffer2;
-    LightBuffer *_lightBuffer;
+    GBuffer *_gBufferBoxBack;
+    GBuffer *_gBufferCylinderBack;
+    GBuffer *_gBufferBoxFront;
+    GBuffer *_gBufferCylinderFront;
     GPipeLine *_gPipeline;
-    LightPipeline *_lightPipeline;
-    FairyPipeline *_fairyPipeline;
-    Cube *_cube;
     Quad *_quad;
-    
-    NSMutableArray *lights;
-    id <MTLTexture> _fairyTexture;
+
     id <MTLTexture> _depthTexture;
 }
 
@@ -85,19 +78,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
         NSLog(@"Metal is not supported on this device");
         self.view = [[NSView alloc] initWithFrame:self.view.frame];
     }
-}
-
-- (float)randomFloat:(float)min max:(float)max
-{
-    double mix = (double)random() / RAND_MAX;
-    return min + (max - min) * mix;
-}
-
-- (vector_float3)randomColor
-{
-    vector_float3 color = (vector_float3){[self randomFloat:0.5f max:1.f], [self randomFloat:0.f max:0.1f], [self randomFloat:0.f max:1.f]};
-    
-    return vector_normalize(color);
 }
 
 - (void)_setupView
@@ -126,77 +106,53 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_loadAssets
 {
-    lights = [[NSMutableArray alloc] init];
-    
     vector_float2 screenSize = (vector_float2){self.view.bounds.size.width * 2, self.view.bounds.size.height * 2};
-    _gBuffer2 = [[GBuffer alloc] initWithDepthEnabled:YES
-                                               device:_device
-                                           screensize:screenSize
-                                      compareFunction:MTLCompareFunctionLess
-                                           clearDepth:1.0f];
 
-    _gBuffer = [[GBuffer alloc] initWithDepthEnabled:YES
+    _gBufferBoxBack = [[GBuffer alloc] initWithDepthEnabled:YES
                                               device:_device
                                           screensize:screenSize
                                      compareFunction:MTLCompareFunctionGreater
                                           clearDepth:0.0f];
 
-    _lightBuffer = [[LightBuffer alloc] initWithDepthEnabled:NO
+    _gBufferCylinderBack = [[GBuffer alloc] initWithDepthEnabled:YES
+                                               device:_device
+                                           screensize:screenSize
+                                      compareFunction:MTLCompareFunctionGreater
+                                           clearDepth:0.0f];
+    
+    _gBufferBoxFront = [[GBuffer alloc] initWithDepthEnabled:YES
                                                       device:_device
-                                                  screensize:screenSize];
+                                                  screensize:screenSize
+                                             compareFunction:MTLCompareFunctionLess
+                                                  clearDepth:1.0f];
+    
+    _gBufferCylinderFront = [[GBuffer alloc] initWithDepthEnabled:YES
+                                                          device:_device
+                                                      screensize:screenSize
+                                                 compareFunction:MTLCompareFunctionLess
+                                                      clearDepth:1.0f];
 
     _gPipeline = [[GPipeLine alloc] initWithDevice:_device library:_defaultLibrary];
-    _lightPipeline = [[LightPipeline alloc] initWithDevice:_device library:_defaultLibrary];
-    _fairyPipeline = [[FairyPipeline alloc] initWithDevice:_device library:_defaultLibrary];
-    
-    _cube = [[Cube alloc] initWithDevice:_device];
     _quad = [[Quad alloc] initWithDevice:_device];
-    
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *bundlePath = [bundle pathForResource:@"assets/fairy" ofType:@"png"];
-    
-    NSMutableString *URLString = [[NSMutableString alloc] initWithString:@"file://"];
-    [URLString appendString:bundlePath];
-    
-    NSURL *textureURL = [NSURL URLWithString:URLString];
-    
-    //NSLog(@"%@", textureURL);
-    //exit(-1);
-    
-    MTKTextureLoader *textureLoader = [[MTKTextureLoader alloc] initWithDevice:_device];
-    
-    
-    
-    NSError *error;
-    _fairyTexture = [textureLoader newTextureWithContentsOfURL:textureURL options:@{MTKTextureLoaderOptionAllocateMipmaps:@YES} error:&error];
-    
-    if (!_fairyTexture) {
-        [NSException raise:@"diffuse texture load" format:@"%@", error.localizedDescription];
-    }
-    
-    for (int i=-5; i<5; i++)
-    {
-        Light *l = [[Light alloc] initWithDevice:_device color:[self randomColor]];
-        [l setXpos:(float)i];
-        [lights addObject:l];
-    }
-    
-    
-    // Generate meshes
-    //MDLMesh *mdl = [MDLMesh newPlaneWithDimensions:(vector_float2){10,10} segments:(vector_uint2){1,1} geometryType:MDLGeometryTypeTriangles allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
-    
-    MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){2,2,10} segments:(vector_uint3){1,1,1} geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
-    
-    MDLMesh *mdl2 = [MDLMesh newCylinderWithHeight:0.5
-                                             radii:(vector_float2){4,4}
-                                    radialSegments:100
-                                  verticalSegments:100
-                                      geometryType:MDLGeometryKindTriangles
-                                     inwardNormals:NO
-                                         allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
 
-    _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
-    _boxMesh2 = [[MTKMesh alloc] initWithMesh:mdl2 device:_device error:nil];
+    NSError *error;
+    
+    MDLMesh *boxModel = [MDLMesh newBoxWithDimensions:(vector_float3){3.5,2,4}
+                                             segments:(vector_uint3){1,1,1}
+                                         geometryType:MDLGeometryTypeTriangles
+                                        inwardNormals:NO
+                                            allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
+        
+    MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:0.5
+                                                      radii:(vector_float2){4,4}
+                                             radialSegments:50
+                                           verticalSegments:1
+                                               geometryType:MDLGeometryKindTriangles
+                                              inwardNormals:NO
+                                                  allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
+
+    _boxMesh = [[MTKMesh alloc] initWithMesh:boxModel device:_device error:nil];
+    _cylinderMesh = [[MTKMesh alloc] initWithMesh:cylinderModel device:_device error:nil];
     
     // Allocate one region of memory for the uniform buffer
     _dynamicConstantBuffer = [_device newBufferWithLength:kMaxBytesPerFrame options:0];
@@ -230,126 +186,44 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
         NSLog(@"Failed to created pipeline state, error %@", error);
     }
     
-    MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
-    if (depthStateDesc == nil) {
-        exit(1); //  if the descriptor could not be allocated
-    }
-    depthStateDesc.depthCompareFunction = MTLCompareFunctionAlways;
-    depthStateDesc.depthWriteEnabled = YES;
-
-//    depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
-//    depthStateDesc.depthWriteEnabled = NO;
-    
-//    depthStateDesc.frontFaceStencil.stencilCompareFunction = MTLCompareFunctionLess;
-//    depthStateDesc.frontFaceStencil.stencilFailureOperation = MTLStencilOperationKeep;
-//    depthStateDesc.frontFaceStencil.depthFailureOperation = MTLStencilOperationIncrementClamp;
-//    depthStateDesc.frontFaceStencil.depthStencilPassOperation = MTLStencilOperationIncrementClamp;
-//    depthStateDesc.frontFaceStencil.readMask = 0x01;
-//    depthStateDesc.frontFaceStencil.writeMask = 0x01;
-//    depthStateDesc.backFaceStencil.stencilCompareFunction = MTLCompareFunctionGreater;
-//    depthStateDesc.backFaceStencil.stencilFailureOperation = MTLStencilOperationKeep;
-//    depthStateDesc.backFaceStencil.depthFailureOperation = MTLStencilOperationIncrementClamp;
-//    depthStateDesc.backFaceStencil.depthStencilPassOperation = MTLStencilOperationIncrementClamp;
-//    depthStateDesc.backFaceStencil.readMask = 0x01;
-//    depthStateDesc.backFaceStencil.writeMask = 0x01;
-    _depthState = [_device newDepthStencilStateWithDescriptor:depthStateDesc];
-    
-    
     MTLTextureDescriptor* textureDesc = [[MTLTextureDescriptor alloc] init];
     textureDesc.textureType = MTLTextureType2D;
     textureDesc.height = self.view.bounds.size.height * 2;
     textureDesc.width = self.view.bounds.size.width * 2;
-    textureDesc.pixelFormat = MTLPixelFormatBGRA8Unorm; // MTLPixelFormatDepth32Float;
-    
-    
+    textureDesc.pixelFormat = MTLPixelFormatBGRA8Unorm;
+
     _depthTexture = [_device newTextureWithDescriptor: textureDesc];
 }
 
-- (void)renderGBuffer:(id <MTLCommandBuffer>)commandBuffer {
-    MTLRenderPassDescriptor* renderPassDescriptor = [_gBuffer renderPassDescriptor];
+- (void)renderGBuffer:(id <MTLCommandBuffer>)commandBuffer renderPassDesc:(MTLRenderPassDescriptor*)renderPassDescriptor depthStencilState:(id <MTLDepthStencilState>)dss debugGroup:(NSString*)dg mesh:(MTKMesh*)mesh {
     if (renderPassDescriptor != nil) {
         id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         renderEncoder.label = @"gBufferEncoder";
-        [renderEncoder setDepthStencilState:[_gBuffer _depthState]];
+        [renderEncoder setDepthStencilState:dss];
         
         // Set context state
-        [renderEncoder pushDebugGroup:@"DrawBox"];
+        [renderEncoder pushDebugGroup:dg];
         [renderEncoder setRenderPipelineState:[_gPipeline _pipeline]];
-        [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer
-                                offset:_boxMesh.vertexBuffers[0].offset
+        [renderEncoder setVertexBuffer:mesh.vertexBuffers[0].buffer
+                                offset:mesh.vertexBuffers[0].offset
                                atIndex:0];
-
+        
         [renderEncoder setVertexBuffer:_dynamicConstantBuffer
                                 offset:(sizeof(uniforms_t) * _constantDataBufferIndex)
                                atIndex:1];
-
-        MTKSubmesh* submesh = _boxMesh.submeshes[0];
-
+        
+        MTKSubmesh* submesh = mesh.submeshes[0];
+        
         // Tell the render context we want to draw our primitives
         [renderEncoder drawIndexedPrimitives:submesh.primitiveType
                                   indexCount:submesh.indexCount
                                    indexType:submesh.indexType
                                  indexBuffer:submesh.indexBuffer.buffer
                            indexBufferOffset:submesh.indexBuffer.offset];
-
-        [renderEncoder popDebugGroup];
-        
-        // We're done encoding commands
-        [renderEncoder endEncoding];
-    }
-}
-
-- (void)renderGBuffer2:(id <MTLCommandBuffer>)commandBuffer {
-    MTLRenderPassDescriptor* renderPassDescriptor = [_gBuffer2 renderPassDescriptor];
-    if (renderPassDescriptor != nil) {
-        id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-        renderEncoder.label = @"gBufferEncoder";
-        [renderEncoder setDepthStencilState:[_gBuffer2 _depthState]];
-        
-        // Set context state
-        [renderEncoder pushDebugGroup:@"DrawCylinder"];
-        [renderEncoder setRenderPipelineState:[_gPipeline _pipeline]];
-        [renderEncoder setVertexBuffer:_boxMesh2.vertexBuffers[0].buffer
-                                offset:_boxMesh2.vertexBuffers[0].offset
-                               atIndex:0];
-        
-        [renderEncoder setVertexBuffer:_dynamicConstantBuffer
-                                offset:(sizeof(uniforms_t) * _constantDataBufferIndex)
-                               atIndex:1];
-
-        MTKSubmesh* submesh2 = _boxMesh2.submeshes[0];
-        
-        // Tell the render context we want to draw our primitives
-        [renderEncoder drawIndexedPrimitives:submesh2.primitiveType
-                                  indexCount:submesh2.indexCount
-                                   indexType:submesh2.indexType
-                                 indexBuffer:submesh2.indexBuffer.buffer
-                           indexBufferOffset:submesh2.indexBuffer.offset];
         
         [renderEncoder popDebugGroup];
         
         // We're done encoding commands
-        [renderEncoder endEncoding];
-    }
-}
-
-- (void)renderLights:(id <MTLCommandBuffer>)commandBuffer
-{
-    MTLRenderPassDescriptor* renderPassDescriptor = [_lightBuffer renderPassDescriptor];
-    if (renderPassDescriptor != nil)
-    {
-        id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-        renderEncoder.label = @"lightBufferEncoder";
-        [renderEncoder pushDebugGroup:@"Lights"];
-        [renderEncoder setDepthStencilState:[_lightBuffer _depthState]];
-        [renderEncoder setRenderPipelineState:[_lightPipeline _pipeline]];
-        
-        [lights enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [(Light *)obj render:_constantDataBufferIndex encoder:renderEncoder withBufferData:_gBuffer];
-        }];
-        
-        
-        [renderEncoder popDebugGroup];
         [renderEncoder endEncoding];
     }
 }
@@ -367,20 +241,33 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     // Call the view's completion handler which is required by the view since it will signal its semaphore and set up the next buffer
     __block dispatch_semaphore_t block_sema = _inflight_semaphore;
     [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
-//        float depth;
-//        MTLRegion region = MTLRegionMake2D(_depthTexture.width/2, _depthTexture.height/2, 1, 1);
-//        [_depthTexture getBytes:&depth bytesPerRow:_depthTexture.width*4 fromRegion:region mipmapLevel:0];
-//        
-//        NSLog(@"read depth: %f", depth);
-        
         dispatch_semaphore_signal(block_sema);
     }];
+
+    [self renderGBuffer:commandBuffer
+      renderPassDesc:[_gBufferBoxBack renderPassDescriptor]
+   depthStencilState:[_gBufferBoxBack _depthState]
+          debugGroup:@"DrawBoxBack"
+                mesh:_boxMesh];
+
+    [self renderGBuffer:commandBuffer
+      renderPassDesc:[_gBufferCylinderBack renderPassDescriptor]
+   depthStencilState:[_gBufferCylinderBack _depthState]
+          debugGroup:@"DrawCylinderBack"
+                mesh:_cylinderMesh];
+
+    [self renderGBuffer:commandBuffer
+      renderPassDesc:[_gBufferBoxFront renderPassDescriptor]
+   depthStencilState:[_gBufferBoxFront _depthState]
+          debugGroup:@"DrawBoxFront"
+                mesh:_boxMesh];
     
-    [self renderGBuffer:commandBuffer];
-    [self renderGBuffer2:commandBuffer];
-    
-    [self renderLights:commandBuffer];
-    
+    [self renderGBuffer:commandBuffer
+      renderPassDesc:[_gBufferCylinderFront renderPassDescriptor]
+   depthStencilState:[_gBufferCylinderFront _depthState]
+          debugGroup:@"DrawCylinderFront"
+                mesh:_cylinderMesh];
+
     // Obtain a renderPassDescriptor generated from the view's drawable textures
     MTLRenderPassDescriptor* renderPassDescriptor = _view.currentRenderPassDescriptor;
 
@@ -389,41 +276,34 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
         // Create a render command encoder so we can render into something
         id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         renderEncoder.label = @"CubeRenderEncoder";
-        [renderEncoder setDepthStencilState:_depthState];
-        
+
         // Set context state
         [renderEncoder pushDebugGroup:@"DrawCube"];
         [renderEncoder setRenderPipelineState:_pipelineState];
-        
+
         [_quad render:_constantDataBufferIndex
               encoder:renderEncoder
          withTextures:@[
-                        [_gBuffer renderPassDescriptor].colorAttachments[0].texture, // albedo
-                        [_gBuffer renderPassDescriptor].colorAttachments[1].texture, // normals
-                        [_gBuffer2 renderPassDescriptor].colorAttachments[0].texture, // albedo2
-                        [_gBuffer2 renderPassDescriptor].colorAttachments[1].texture, // normals2
-                        [_lightBuffer renderPassDescriptor].colorAttachments[0].texture, // lightData
-                        _gBuffer.depthTexture,
-                        _gBuffer2.depthTexture
+                        [_gBufferBoxBack renderPassDescriptor].colorAttachments[0].texture, // albedo
+                        [_gBufferBoxBack renderPassDescriptor].colorAttachments[1].texture, // normals
+                        _gBufferBoxBack.depthTexture,
+
+                        [_gBufferCylinderBack renderPassDescriptor].colorAttachments[0].texture,
+                        [_gBufferCylinderBack renderPassDescriptor].colorAttachments[1].texture,
+                        _gBufferCylinderBack.depthTexture,
+
+                        [_gBufferBoxFront renderPassDescriptor].colorAttachments[0].texture,
+                        [_gBufferBoxFront renderPassDescriptor].colorAttachments[1].texture,
+                        _gBufferBoxFront.depthTexture,
+
+                        [_gBufferCylinderFront renderPassDescriptor].colorAttachments[0].texture,
+                        [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture,
+                        _gBufferCylinderFront.depthTexture
                        ]];
         // the above buffers get fed into Shaders.metal/cubeFrag()
 
-//        [_cube render:_constantDataBufferIndex
-//              encoder:renderEncoder
-//         withTextures:@[
-//                        [_gBuffer renderPassDescriptor].colorAttachments[0].texture,
-//                        [_gBuffer renderPassDescriptor].colorAttachments[1].texture,
-//                        [_lightBuffer renderPassDescriptor].colorAttachments[0].texture
-//                       ]];
-
         [renderEncoder popDebugGroup];
-        
-        
-        [renderEncoder setRenderPipelineState:[_fairyPipeline _pipeline]];
-//        [lights enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//            [(Light *)obj renderFairy:_constantDataBufferIndex encoder:renderEncoder withTexture:_fairyTexture];
-//        }];
-        
+
         // We're done encoding commands
         [renderEncoder endEncoding];
         
@@ -441,17 +321,12 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 - (void)_reshape
 {
     vector_float2 screenSize = (vector_float2){self.view.bounds.size.width * 2, self.view.bounds.size.height * 2};
-    [_gBuffer setScreenSize:screenSize device:_device];
-    [_lightBuffer setScreenSize:screenSize device:_device];
+    [_gBufferBoxBack setScreenSize:screenSize device:_device];
+    [_gBufferBoxFront setScreenSize:screenSize device:_device];
+    [_gBufferCylinderBack setScreenSize:screenSize device:_device];
+    [_gBufferCylinderFront setScreenSize:screenSize device:_device];
     
     [_quad _reshape:screenSize];
-    [_cube _reshape:screenSize];
-    
-    [lights enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [(Light *)obj _reshape:screenSize];
-    }];
-    
-    
     
     // When reshape is called, update the view and projection matricies since this means the view orientation or size changed
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
@@ -464,11 +339,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 {
     [_quad update:_constantDataBufferIndex];
     
-    [lights enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [(Light *)obj update:_viewMatrix projection:_projectionMatrix bufferIndex:_constantDataBufferIndex];
-    }];
-    //matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(_rotation, 0.0f, 1.0f, 0.0f));
-    matrix_float4x4 base_model = matrix_from_translation(0, 0.0, 0);
+    matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
     matrix_float4x4 modelViewMatrix = matrix_multiply(_viewMatrix, base_model);
     
     // Load constant buffer data into appropriate buffer at current index
