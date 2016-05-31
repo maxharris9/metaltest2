@@ -37,21 +37,10 @@ vertex ColorInOut cubeVert(device vertex_t* vertex_array [[ buffer(0) ]],
 }
 
 fragment float4 cubeFrag(ColorInOut in [[stage_in]],
-                         texture2d<float> boxRearAlbedo [[ texture(0) ]],
-                         texture2d<float> boxRearNormalsTexture [[ texture(1) ]],
-                         depth2d<float>   boxRearDepth [[ texture(2) ]],
-
-                         texture2d<float> cylinderRearAlbedo [[ texture(3) ]],
-                         texture2d<float> cylinderRearNormalsTexture [[ texture(4) ]],
-                         depth2d<float>   cylinderRearDepth [[ texture(5) ]],
-
-                         texture2d<float> boxFrontAlbedo [[ texture(6) ]],
-                         texture2d<float> boxFrontNormalsTexture [[ texture(7) ]],
-                         depth2d<float>   boxFrontDepth [[ texture(8) ]],
-
-                         texture2d<float> cylinderFrontAlbedo [[ texture(9) ]],
-                         texture2d<float> cylinderFrontNormalsTexture [[ texture(10) ]],
-                         depth2d<float>   cylinderFrontDepth [[ texture(11) ]])
+                         depth2d<float> boxRearDepth [[ texture(0) ]],
+                         depth2d<float> cylinderRearDepth [[ texture(1) ]],
+                         depth2d<float> boxFrontDepth [[ texture(2) ]],
+                         depth2d<float> cylinderFrontDepth [[ texture(3) ]])
 {
     constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
 
@@ -72,5 +61,5 @@ fragment float4 cubeFrag(ColorInOut in [[stage_in]],
     float4 silhouette = (split.r < 1) ? cylFront : black;
     float4 finally = min(max(silhouette, newlyCut), maskFront);
 
-    return pow(finally, 90) - 0.6;
+    return pow(finally, 90) - 0.3;
 }

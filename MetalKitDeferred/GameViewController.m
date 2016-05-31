@@ -137,13 +137,13 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
     NSError *error;
     
-    MDLMesh *boxModel = [MDLMesh newBoxWithDimensions:(vector_float3){3.5,2,4}
+    MDLMesh *boxModel = [MDLMesh newBoxWithDimensions:(vector_float3){10,2,4}
                                              segments:(vector_uint3){1,1,1}
                                          geometryType:MDLGeometryTypeTriangles
                                         inwardNormals:NO
                                             allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
         
-    MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:0.5
+    MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:5
                                                       radii:(vector_float2){4,4}
                                              radialSegments:50
                                            verticalSegments:1
@@ -283,24 +283,15 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
         [_quad render:_constantDataBufferIndex
               encoder:renderEncoder
-         withTextures:@[
-                        [_gBufferBoxBack renderPassDescriptor].colorAttachments[0].texture, // albedo
-                        [_gBufferBoxBack renderPassDescriptor].colorAttachments[1].texture, // normals
+         withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
                         _gBufferBoxBack.depthTexture,
-
-                        [_gBufferCylinderBack renderPassDescriptor].colorAttachments[0].texture,
-                        [_gBufferCylinderBack renderPassDescriptor].colorAttachments[1].texture,
                         _gBufferCylinderBack.depthTexture,
-
-                        [_gBufferBoxFront renderPassDescriptor].colorAttachments[0].texture,
-                        [_gBufferBoxFront renderPassDescriptor].colorAttachments[1].texture,
                         _gBufferBoxFront.depthTexture,
-
-                        [_gBufferCylinderFront renderPassDescriptor].colorAttachments[0].texture,
-                        [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture,
                         _gBufferCylinderFront.depthTexture
                        ]];
-        // the above buffers get fed into Shaders.metal/cubeFrag()
+        // other textures (texture2d<float> cylinderFront [[ texture(0) ]])
+        // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[0].texture, // albedo
+        // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture // normals
 
         [renderEncoder popDebugGroup];
 
