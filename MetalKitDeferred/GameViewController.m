@@ -137,13 +137,13 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
     NSError *error;
     
-    MDLMesh *boxModel = [MDLMesh newBoxWithDimensions:(vector_float3){10,2,4}
+    MDLMesh *boxModel = [MDLMesh newBoxWithDimensions:(vector_float3){1,10,4}
                                              segments:(vector_uint3){1,1,1}
                                          geometryType:MDLGeometryTypeTriangles
                                         inwardNormals:NO
                                             allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
         
-    MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:5
+    MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:0.5
                                                       radii:(vector_float2){4,4}
                                              radialSegments:50
                                            verticalSegments:1

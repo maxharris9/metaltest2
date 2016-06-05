@@ -18,6 +18,7 @@
 		D0F112DE1C0E46D500C9E780 /* GBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112DD1C0E46D500C9E780 /* GBuffer.m */; };
 		D0F112E11C0E4A0A00C9E780 /* GPipeLine.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */; };
 		D0F112E31C0E4CCB00C9E780 /* gBuffer.metal in Sources */ = {isa = PBXBuildFile; fileRef = D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */; };
+		E7C7ED4F1D03A295008FEA16 /* csg.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7C7ED4E1D03A295008FEA16 /* csg.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,8 @@
 		D0F112DF1C0E4A0A00C9E780 /* GPipeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPipeLine.h; sourceTree = "<group>"; };
 		D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPipeLine.m; sourceTree = "<group>"; };
 		D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = gBuffer.metal; sourceTree = "<group>"; };
+		E7C7ED4E1D03A295008FEA16 /* csg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = csg.mm; sourceTree = "<group>"; };
+		E7C7ED501D03A2B4008FEA16 /* csg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = csg.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +104,8 @@
 				D0F112B71C0E442800C9E780 /* AppDelegate.h */,
 				D0F112BD1C0E442800C9E780 /* GameViewController.h */,
 				D0F112BE1C0E442800C9E780 /* GameViewController.m */,
+				E7C7ED4E1D03A295008FEA16 /* csg.mm */,
+				E7C7ED501D03A2B4008FEA16 /* csg.h */,
 				D090D37A1C0E62A900019855 /* math.h */,
 				D0F112C31C0E442800C9E780 /* Assets.xcassets */,
 				D0F112C51C0E442800C9E780 /* MainMenu.xib */,
@@ -256,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7C7ED4F1D03A295008FEA16 /* csg.mm in Sources */,
 				D0F112E31C0E4CCB00C9E780 /* gBuffer.metal in Sources */,
 				D0F112DE1C0E46D500C9E780 /* GBuffer.m in Sources */,
 				D0F112C11C0E442800C9E780 /* Shaders.metal in Sources */,
