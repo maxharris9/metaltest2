@@ -62,24 +62,27 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)viewDidLoad
 {
-    csgNode *lclgc = new csgNode(LEAF, NULL, NULL);
-    lclgc->shape = new shape();
-    csgNode *lcrgc = new csgNode(LEAF, NULL, NULL);
-    lcrgc->shape = new shape();
-    csgNode *lc = new csgNode(ADD, lclgc, lcrgc);
+    csgNode *A = new csgNode(LEAF, NULL, NULL);
+    A->shape = new shape();
+    csgNode *B = new csgNode(LEAF, NULL, NULL);
+    B->shape = new shape();
+    csgNode *temp0 = new csgNode(ADD, A, B);
 
-    csgNode *rclgc = new csgNode(LEAF, NULL, NULL);
-    rclgc->shape = new shape();
-    csgNode *rcrgc = new csgNode(LEAF, NULL, NULL);
-    rcrgc->shape = new shape();
-    csgNode *rc = new csgNode(INTERSECT, rclgc, rcrgc);
-    
-    csgNode *n = new csgNode(ADD, lc, rc);
-    
-    NSLog(@"Has children: %d", n->hasChildren());
+    csgNode *C = new csgNode(LEAF, NULL, NULL);
+    C->shape = new shape();
+    csgNode *X = new csgNode(INTERSECT, temp0, C);
 
+    csgNode *Y = new csgNode(LEAF, NULL, NULL);
+    Y->shape = new shape();
+    csgNode *Z = new csgNode(LEAF, NULL, NULL);
+    Z->shape = new shape();
+    csgNode *temp1 = new csgNode(INTERSECT, Y, Z);
+
+    csgNode *root = new csgNode(SUBTRACT, X, temp1);
     
-    csgTree *ct = new csgTree(*n);
+    NSLog(@"Has children: %d", root->hasChildren());
+
+    csgTree *ct = new csgTree(*root);
 
     ct->rootNode = ct->normalize(ct->rootNode);
     
