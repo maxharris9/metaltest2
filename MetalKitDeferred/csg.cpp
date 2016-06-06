@@ -1,5 +1,5 @@
 //
-//  csg.mm
+//  csg.cpp
 //  XXX
 //
 //  Created by Max Harris on 6/4/16.
@@ -9,8 +9,16 @@
 #include <stdio.h>
 #include "csg.h"
 
-bool csgTree::replaceSetEquivalences(csgNode &node) {
-    if (node.operation == ADD) {
+csgTree::csgTree (csgNode &node) {
+    this->rootNode = &node;
+}
+
+csgTree::~csgTree () {
+    
+}
+
+bool csgTree::replaceSetEquivalences (csgNode &node) {
+    if (node.operation == ADD || !node.hasChildren()) {
         return false;
     }
 
@@ -56,8 +64,12 @@ bool csgTree::replaceSetEquivalences(csgNode &node) {
     return false;
 }
 
-csgNode *csgTree::normalize(csgNode &node) {
-    while (this->replaceSetEquivalences(node) && node.hasChildren()) { }
-    node.leftChild = this->normalize(*node.leftChild);
-    return &node;
+csgNode *csgTree::normalize (csgNode *node) {
+    while (node->hasChildren() && node->leftChild != NULL && this->replaceSetEquivalences(*node)) { }
+    if (node->leftChild != NULL) {
+        printf("Normalizing\n");
+        node->leftChild = this->normalize(node->leftChild);
+    }
+    
+    return node;
 }

@@ -15,6 +15,7 @@
 #import "Quad.h"
 
 #import "math.h"
+#import "csg.h"
 
 // The max number of command buffers in flight
 static const NSUInteger kMaxInflightBuffers = 3;
@@ -61,6 +62,29 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)viewDidLoad
 {
+    csgNode *lclgc = new csgNode(LEAF, NULL, NULL);
+    lclgc->shape = new shape();
+    csgNode *lcrgc = new csgNode(LEAF, NULL, NULL);
+    lcrgc->shape = new shape();
+    csgNode *lc = new csgNode(ADD, lclgc, lcrgc);
+
+    csgNode *rclgc = new csgNode(LEAF, NULL, NULL);
+    rclgc->shape = new shape();
+    csgNode *rcrgc = new csgNode(LEAF, NULL, NULL);
+    rcrgc->shape = new shape();
+    csgNode *rc = new csgNode(INTERSECT, rclgc, rcrgc);
+    
+    csgNode *n = new csgNode(ADD, lc, rc);
+    
+    NSLog(@"Has children: %d", n->hasChildren());
+
+    
+    csgTree *ct = new csgTree(*n);
+
+    ct->rootNode = ct->normalize(ct->rootNode);
+    
+
+
     [super viewDidLoad];
     
     _constantDataBufferIndex = 0;
@@ -106,7 +130,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_loadAssets
 {
-    vector_float2 screenSize = (vector_float2){self.view.bounds.size.width * 2, self.view.bounds.size.height * 2};
+    vector_float2 screenSize = (vector_float2){static_cast<float>(self.view.bounds.size.width * 2), static_cast<float>(self.view.bounds.size.height * 2)};
 
     _gBufferBoxBack = [[GBuffer alloc] initWithDepthEnabled:YES
                                               device:_device
@@ -287,7 +311,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                         _gBufferBoxBack.depthTexture,
                         _gBufferCylinderBack.depthTexture,
                         _gBufferBoxFront.depthTexture,
-                        _gBufferCylinderFront.depthTexture
+                        _gBufferCylinderFront.depthTexture,
+                        [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture // normals
                        ]];
         // other textures (texture2d<float> cylinderFront [[ texture(0) ]])
         // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[0].texture, // albedo
@@ -311,7 +336,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_reshape
 {
-    vector_float2 screenSize = (vector_float2){self.view.bounds.size.width * 2, self.view.bounds.size.height * 2};
+    vector_float2 screenSize = (vector_float2){static_cast<float>(self.view.bounds.size.width * 2), static_cast<float>(self.view.bounds.size.height * 2)};
     [_gBufferBoxBack setScreenSize:screenSize device:_device];
     [_gBufferBoxFront setScreenSize:screenSize device:_device];
     [_gBufferCylinderBack setScreenSize:screenSize device:_device];

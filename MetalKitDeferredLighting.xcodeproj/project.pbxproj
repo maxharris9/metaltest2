@@ -10,7 +10,7 @@
 		D090D3791C0E59BC00019855 /* Quad.m in Sources */ = {isa = PBXBuildFile; fileRef = D090D3781C0E59BC00019855 /* Quad.m */; };
 		D0F112B91C0E442800C9E780 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112B81C0E442800C9E780 /* AppDelegate.m */; };
 		D0F112BC1C0E442800C9E780 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112BB1C0E442800C9E780 /* main.m */; };
-		D0F112BF1C0E442800C9E780 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112BE1C0E442800C9E780 /* GameViewController.m */; };
+		D0F112BF1C0E442800C9E780 /* GameViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D0F112BE1C0E442800C9E780 /* GameViewController.mm */; };
 		D0F112C11C0E442800C9E780 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = D0F112C01C0E442800C9E780 /* Shaders.metal */; };
 		D0F112C41C0E442800C9E780 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0F112C31C0E442800C9E780 /* Assets.xcassets */; };
 		D0F112C71C0E442800C9E780 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0F112C51C0E442800C9E780 /* MainMenu.xib */; };
@@ -18,7 +18,7 @@
 		D0F112DE1C0E46D500C9E780 /* GBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112DD1C0E46D500C9E780 /* GBuffer.m */; };
 		D0F112E11C0E4A0A00C9E780 /* GPipeLine.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */; };
 		D0F112E31C0E4CCB00C9E780 /* gBuffer.metal in Sources */ = {isa = PBXBuildFile; fileRef = D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */; };
-		E7C7ED4F1D03A295008FEA16 /* csg.mm in Sources */ = {isa = PBXBuildFile; fileRef = E7C7ED4E1D03A295008FEA16 /* csg.mm */; };
+		E7C7ED4F1D03A295008FEA16 /* csg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7C7ED4E1D03A295008FEA16 /* csg.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +40,7 @@
 		D0F112B81C0E442800C9E780 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		D0F112BB1C0E442800C9E780 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D0F112BD1C0E442800C9E780 /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
-		D0F112BE1C0E442800C9E780 /* GameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
+		D0F112BE1C0E442800C9E780 /* GameViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GameViewController.mm; sourceTree = "<group>"; };
 		D0F112C01C0E442800C9E780 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		D0F112C21C0E442800C9E780 /* SharedStructures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedStructures.h; sourceTree = "<group>"; };
 		D0F112C31C0E442800C9E780 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -54,7 +54,7 @@
 		D0F112DF1C0E4A0A00C9E780 /* GPipeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPipeLine.h; sourceTree = "<group>"; };
 		D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPipeLine.m; sourceTree = "<group>"; };
 		D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = gBuffer.metal; sourceTree = "<group>"; };
-		E7C7ED4E1D03A295008FEA16 /* csg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = csg.mm; sourceTree = "<group>"; };
+		E7C7ED4E1D03A295008FEA16 /* csg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = csg.cpp; sourceTree = "<group>"; };
 		E7C7ED501D03A2B4008FEA16 /* csg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = csg.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,8 +103,8 @@
 				D0F112B81C0E442800C9E780 /* AppDelegate.m */,
 				D0F112B71C0E442800C9E780 /* AppDelegate.h */,
 				D0F112BD1C0E442800C9E780 /* GameViewController.h */,
-				D0F112BE1C0E442800C9E780 /* GameViewController.m */,
-				E7C7ED4E1D03A295008FEA16 /* csg.mm */,
+				D0F112BE1C0E442800C9E780 /* GameViewController.mm */,
+				E7C7ED4E1D03A295008FEA16 /* csg.cpp */,
 				E7C7ED501D03A2B4008FEA16 /* csg.h */,
 				D090D37A1C0E62A900019855 /* math.h */,
 				D0F112C31C0E442800C9E780 /* Assets.xcassets */,
@@ -261,13 +261,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7C7ED4F1D03A295008FEA16 /* csg.mm in Sources */,
+				E7C7ED4F1D03A295008FEA16 /* csg.cpp in Sources */,
 				D0F112E31C0E4CCB00C9E780 /* gBuffer.metal in Sources */,
 				D0F112DE1C0E46D500C9E780 /* GBuffer.m in Sources */,
 				D0F112C11C0E442800C9E780 /* Shaders.metal in Sources */,
 				D0F112BC1C0E442800C9E780 /* main.m in Sources */,
 				D090D3791C0E59BC00019855 /* Quad.m in Sources */,
-				D0F112BF1C0E442800C9E780 /* GameViewController.m in Sources */,
+				D0F112BF1C0E442800C9E780 /* GameViewController.mm in Sources */,
 				D0F112B91C0E442800C9E780 /* AppDelegate.m in Sources */,
 				D0F112E11C0E4A0A00C9E780 /* GPipeLine.m in Sources */,
 			);
