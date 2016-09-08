@@ -40,7 +40,8 @@ fragment float4 cubeFrag(ColorInOut in [[stage_in]],
                          depth2d<float> boxRearDepth [[ texture(0) ]],
                          depth2d<float> cylinderRearDepth [[ texture(1) ]],
                          depth2d<float> boxFrontDepth [[ texture(2) ]],
-                         depth2d<float> cylinderFrontDepth [[ texture(3) ]])
+                         depth2d<float> cylinderFrontDepth [[ texture(3) ]],
+                         texture2d<float> cylinderFrontNormals [[ texture(4) ]])
 {
     constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
 
@@ -60,6 +61,8 @@ fragment float4 cubeFrag(ColorInOut in [[stage_in]],
     float4 split = min(maskFront, maskRear);
     float4 silhouette = (split.r < 1) ? cylFront : black;
     float4 finally = min(max(silhouette, newlyCut), maskFront);
+    
+    float4 cylFrontNormals = cylinderFrontNormals.sample(texSampler, in.texCoord);
 
-    return pow(finally, 90) - 0.3;
+    return (pow(finally, 90) - 0.6) + cylFrontNormals/9;
 }
