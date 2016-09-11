@@ -27,7 +27,7 @@
 			containerPortal = D0F112AC1C0E442800C9E780 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = D0F112B31C0E442800C9E780;
-			remoteInfo = MetalKitDeferred;
+			remoteInfo = ImageSpaceCsg;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -113,7 +113,7 @@
 				D0F112BA1C0E442800C9E780 /* Supporting Files */,
 			);
 			name = ImageSpaceCsg;
-			path = MetalKitDeferred;
+			path = ImageSpaceCsg;
 			sourceTree = "<group>";
 		};
 		D0F112BA1C0E442800C9E780 /* Supporting Files */ = {
@@ -131,7 +131,7 @@
 				D0F112D31C0E442900C9E780 /* Info.plist */,
 			);
 			name = ImageSpaceCsgUITests;
-			path = MetalKitDeferredUITests;
+			path = ImageSpaceCsgUITests;
 			sourceTree = "<group>";
 		};
 		E7DD31AD1CF132080022DE55 /* shaders */ = {
@@ -180,7 +180,7 @@
 			dependencies = (
 			);
 			name = ImageSpaceCsg;
-			productName = MetalKitDeferred;
+			productName = ImageSpaceCsg;
 			productReference = D0F112B41C0E442800C9E780 /* ImageSpaceCsg.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -198,7 +198,7 @@
 				D0F112CF1C0E442800C9E780 /* PBXTargetDependency */,
 			);
 			name = ImageSpaceCsgUITests;
-			productName = MetalKitDeferredUITests;
+			productName = ImageSpaceCsgUITests;
 			productReference = D0F112CD1C0E442800C9E780 /* ImageSpaceCsg.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
@@ -389,7 +389,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MetalKitDeferred/Info.plist;
+				INFOPLIST_FILE = ImageSpaceCsg/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Solids.ImageSpaceCsg;
 				PRODUCT_NAME = ImageSpaceCsg;
@@ -401,7 +401,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MetalKitDeferred/Info.plist;
+				INFOPLIST_FILE = ImageSpaceCsg/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Solids.ImageSpaceCsg;
 				PRODUCT_NAME = ImageSpaceCsg;
@@ -413,11 +413,11 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				INFOPLIST_FILE = MetalKitDeferredUITests/Info.plist;
+				INFOPLIST_FILE = ImageSpaceCsgUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Hypercube.MetalKitDeferredUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Hypercube.ImageSpaceCsgUITests;
 				PRODUCT_NAME = ImageSpaceCsg;
-				TEST_TARGET_NAME = MetalKitDeferred;
+				TEST_TARGET_NAME = ImageSpaceCsg;
 				USES_XCTRUNNER = YES;
 			};
 			name = Debug;
@@ -426,11 +426,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MetalKitDeferredUITests/Info.plist;
+				INFOPLIST_FILE = ImageSpaceCsgUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Hypercube.MetalKitDeferredUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Hypercube.ImageSpaceCsgUITests;
 				PRODUCT_NAME = ImageSpaceCsg;
-				TEST_TARGET_NAME = MetalKitDeferred;
+				TEST_TARGET_NAME = ImageSpaceCsg;
 				USES_XCTRUNNER = YES;
 			};
 			name = Release;
