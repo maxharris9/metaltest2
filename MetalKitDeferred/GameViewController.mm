@@ -37,9 +37,10 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     id <MTLDevice> _device;
     id <MTLCommandQueue> _commandQueue;
     id <MTLLibrary> _defaultLibrary;
-    id <MTLRenderPipelineState> _pipelineState;
+    id <MTLRenderPipelineState> _pipelineStateFront;
+    id <MTLRenderPipelineState> _pipelineStateBack;
     id <MTLDepthStencilState> _depthState;
-    
+  
     // uniforms
     matrix_float4x4 _projectionMatrix;
     matrix_float4x4 _viewMatrix;
@@ -139,18 +140,18 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                                      compareFunction:MTLCompareFunctionGreater
                                           clearDepth:0.0f];
 
-    _gBufferCylinderBack = [[GBuffer alloc] initWithDepthEnabled:YES
-                                               device:_device
-                                           screensize:screenSize
-                                      compareFunction:MTLCompareFunctionGreater
-                                           clearDepth:0.0f];
-    
     _gBufferBoxFront = [[GBuffer alloc] initWithDepthEnabled:YES
                                                       device:_device
                                                   screensize:screenSize
                                              compareFunction:MTLCompareFunctionLess
                                                   clearDepth:1.0f];
-    
+
+    _gBufferCylinderBack = [[GBuffer alloc] initWithDepthEnabled:YES
+                                                          device:_device
+                                                      screensize:screenSize
+                                                 compareFunction:MTLCompareFunctionGreater
+                                                      clearDepth:0.0f];
+
     _gBufferCylinderFront = [[GBuffer alloc] initWithDepthEnabled:YES
                                                           device:_device
                                                       screensize:screenSize
@@ -183,34 +184,51 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     _dynamicConstantBuffer = [_device newBufferWithLength:kMaxBytesPerFrame options:0];
     _dynamicConstantBuffer.label = @"UniformBuffer";
     
-    // Load the fragment program into the library
-    id <MTLFunction> fragmentProgram = [_defaultLibrary newFunctionWithName:@"cubeFrag"];
-    
-    // Load the vertex program into the library
-    id <MTLFunction> vertexProgram = [_defaultLibrary newFunctionWithName:@"cubeVert"];
-    
+    // load the fragment and vertex programs into the library
+    id <MTLFunction> fragmentProgramFront = [_defaultLibrary newFunctionWithName:@"combinerFragFront"];
+    id <MTLFunction> fragmentProgramBack = [_defaultLibrary newFunctionWithName:@"combinerFragBack"];
+    id <MTLFunction> vertexProgram = [_defaultLibrary newFunctionWithName:@"combinerVert"];
+
+  
     // Create a vertex descriptor from the MTKMesh
     MTLVertexDescriptor *vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(_boxMesh.vertexDescriptor);
     vertexDescriptor.layouts[0].stepRate = 1;
     vertexDescriptor.layouts[0].stepFunction = MTLVertexStepFunctionPerVertex;
     
     // Create a reusable pipeline state
-    MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-    pipelineStateDescriptor.label = @"MyPipeline";
-    pipelineStateDescriptor.sampleCount = _view.sampleCount;
-    pipelineStateDescriptor.vertexFunction = vertexProgram;
-    pipelineStateDescriptor.fragmentFunction = fragmentProgram;
-    pipelineStateDescriptor.vertexDescriptor = vertexDescriptor;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
-    pipelineStateDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
+    MTLRenderPipelineDescriptor *pipelineStateFrontDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+    pipelineStateFrontDescriptor.label = @"FrontPipeline";
+    pipelineStateFrontDescriptor.sampleCount = _view.sampleCount;
+    pipelineStateFrontDescriptor.vertexFunction = vertexProgram;
+    pipelineStateFrontDescriptor.fragmentFunction = fragmentProgramFront;
+    pipelineStateFrontDescriptor.vertexDescriptor = vertexDescriptor;
+    pipelineStateFrontDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
+    pipelineStateFrontDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
+    pipelineStateFrontDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
     
     error = NULL;
-    _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
-    if (!_pipelineState) {
+    _pipelineStateFront = [_device newRenderPipelineStateWithDescriptor:pipelineStateFrontDescriptor error:&error];
+    if (!_pipelineStateFront) {
         NSLog(@"Failed to created pipeline state, error %@", error);
     }
+  
+    // Create a reusable pipeline state
+    MTLRenderPipelineDescriptor *pipelineStateBackDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+    pipelineStateBackDescriptor.label = @"BackPipeline";
+    pipelineStateBackDescriptor.sampleCount = _view.sampleCount;
+    pipelineStateBackDescriptor.vertexFunction = vertexProgram;
+    pipelineStateBackDescriptor.fragmentFunction = fragmentProgramBack;
+    pipelineStateBackDescriptor.vertexDescriptor = vertexDescriptor;
+    pipelineStateBackDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
+    pipelineStateBackDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
+    pipelineStateBackDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
     
+    error = NULL;
+    _pipelineStateBack = [_device newRenderPipelineStateWithDescriptor:pipelineStateBackDescriptor error:&error];
+    if (!_pipelineStateBack) {
+      NSLog(@"Failed to created pipeline state, error %@", error);
+    }
+
     MTLTextureDescriptor* textureDesc = [[MTLTextureDescriptor alloc] init];
     textureDesc.textureType = MTLTextureType2D;
     textureDesc.height = self.view.bounds.size.height * 2;
@@ -251,86 +269,108 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     }
 }
 
+- (void)_renderOnePass:(id <MTLCommandBuffer>)commandBuffer
+{
+  // Obtain a renderPassDescriptor generated from the view's drawable textures
+  MTLRenderPassDescriptor* renderPassDescriptor = _view.currentRenderPassDescriptor;
+  
+  if (renderPassDescriptor != nil) // If we have a valid drawable, begin the commands to render into it
+  {
+    // Create a render command encoder so we can render into something
+    id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+    renderEncoder.label = @"CubeRenderEncoder";
+    
+    // Set context state
+    [renderEncoder pushDebugGroup:@"DrawFronts"];
+    [renderEncoder setRenderPipelineState:_pipelineStateFront];
+    
+    [_quad render:_constantDataBufferIndex
+          encoder:renderEncoder
+     withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
+                    _gBufferBoxBack.depthTexture,
+                    _gBufferCylinderBack.depthTexture,
+                    _gBufferBoxFront.depthTexture,
+                    _gBufferCylinderFront.depthTexture
+                   ]
+    ];
+    // other textures (texture2d<float> cylinderFront [[ texture(0) ]])
+    // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[0].texture, // albedo
+    // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture // normals
+    [renderEncoder popDebugGroup];
+
+    
+    [renderEncoder pushDebugGroup:@"DrawBacks"];
+    [renderEncoder setRenderPipelineState:_pipelineStateBack];
+    
+    [_quad render:_constantDataBufferIndex
+          encoder:renderEncoder
+     withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
+                    _gBufferBoxBack.depthTexture,
+                    _gBufferCylinderBack.depthTexture,
+                    _gBufferBoxFront.depthTexture,
+                    _gBufferCylinderFront.depthTexture
+                   ]
+    ];
+    [renderEncoder popDebugGroup];
+    
+    // We're done encoding commands
+    [renderEncoder endEncoding];
+    
+    // Schedule a present once the framebuffer is complete using the current drawable
+    [commandBuffer presentDrawable:_view.currentDrawable];
+  }
+}
+
 - (void)_render
 {
-    dispatch_semaphore_wait(_inflight_semaphore, DISPATCH_TIME_FOREVER);
-    
-    [self _update];
+  dispatch_semaphore_wait(_inflight_semaphore, DISPATCH_TIME_FOREVER);
+  
+  [self _update];
 
-    // Create a new command buffer for each renderpass to the current drawable
-    id <MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-    commandBuffer.label = @"MyCommand";
-    
-    // Call the view's completion handler which is required by the view since it will signal its semaphore and set up the next buffer
-    __block dispatch_semaphore_t block_sema = _inflight_semaphore;
-    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
-        dispatch_semaphore_signal(block_sema);
-    }];
+  // Create a new command buffer for each renderpass to the current drawable
+  id <MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+  commandBuffer.label = @"MyCommand";
+  
+  // Call the view's completion handler which is required by the view since it will signal its semaphore and set up the next buffer
+  __block dispatch_semaphore_t block_sema = _inflight_semaphore;
+  [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
+      dispatch_semaphore_signal(block_sema);
+  }];
 
-    [self renderGBuffer:commandBuffer
-      renderPassDesc:[_gBufferBoxBack renderPassDescriptor]
-   depthStencilState:[_gBufferBoxBack _depthState]
-          debugGroup:@"DrawBoxBack"
-                mesh:_boxMesh];
+  [self renderGBuffer:commandBuffer
+       renderPassDesc:[_gBufferBoxBack renderPassDescriptor]
+    depthStencilState:[_gBufferBoxBack _depthState]
+           debugGroup:@"DrawBoxBack"
+                 mesh:_boxMesh];
+  
+  [self renderGBuffer:commandBuffer
+       renderPassDesc:[_gBufferBoxFront renderPassDescriptor]
+    depthStencilState:[_gBufferBoxFront _depthState]
+           debugGroup:@"DrawBoxFront"
+                 mesh:_boxMesh];
+  
+  [self renderGBuffer:commandBuffer
+       renderPassDesc:[_gBufferCylinderBack renderPassDescriptor]
+    depthStencilState:[_gBufferCylinderBack _depthState]
+           debugGroup:@"DrawCylinderBack"
+                 mesh:_cylinderMesh];
+  
+  [self renderGBuffer:commandBuffer
+       renderPassDesc:[_gBufferCylinderFront renderPassDescriptor]
+    depthStencilState:[_gBufferCylinderFront _depthState]
+           debugGroup:@"DrawCylinderFront"
+                 mesh:_cylinderMesh];
 
-    [self renderGBuffer:commandBuffer
-      renderPassDesc:[_gBufferCylinderBack renderPassDescriptor]
-   depthStencilState:[_gBufferCylinderBack _depthState]
-          debugGroup:@"DrawCylinderBack"
-                mesh:_cylinderMesh];
+  [self _renderOnePass:commandBuffer];
+  
+  
+  
 
-    [self renderGBuffer:commandBuffer
-      renderPassDesc:[_gBufferBoxFront renderPassDescriptor]
-   depthStencilState:[_gBufferBoxFront _depthState]
-          debugGroup:@"DrawBoxFront"
-                mesh:_boxMesh];
-    
-    [self renderGBuffer:commandBuffer
-      renderPassDesc:[_gBufferCylinderFront renderPassDescriptor]
-   depthStencilState:[_gBufferCylinderFront _depthState]
-          debugGroup:@"DrawCylinderFront"
-                mesh:_cylinderMesh];
+  // The render assumes it can now increment the buffer index and that the previous index won't be touched until we cycle back around to the same index
+  _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kMaxInflightBuffers;
 
-    // Obtain a renderPassDescriptor generated from the view's drawable textures
-    MTLRenderPassDescriptor* renderPassDescriptor = _view.currentRenderPassDescriptor;
-
-    if(renderPassDescriptor != nil) // If we have a valid drawable, begin the commands to render into it
-    {
-        // Create a render command encoder so we can render into something
-        id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-        renderEncoder.label = @"CubeRenderEncoder";
-
-        // Set context state
-        [renderEncoder pushDebugGroup:@"DrawCube"];
-        [renderEncoder setRenderPipelineState:_pipelineState];
-
-        [_quad render:_constantDataBufferIndex
-              encoder:renderEncoder
-         withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
-                        _gBufferBoxBack.depthTexture,
-                        _gBufferCylinderBack.depthTexture,
-                        _gBufferBoxFront.depthTexture,
-                        _gBufferCylinderFront.depthTexture,
-                        [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture // normals
-                       ]];
-        // other textures (texture2d<float> cylinderFront [[ texture(0) ]])
-        // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[0].texture, // albedo
-        // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture // normals
-
-        [renderEncoder popDebugGroup];
-
-        // We're done encoding commands
-        [renderEncoder endEncoding];
-        
-        // Schedule a present once the framebuffer is complete using the current drawable
-        [commandBuffer presentDrawable:_view.currentDrawable];
-    }
-
-    // The render assumes it can now increment the buffer index and that the previous index won't be touched until we cycle back around to the same index
-    _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kMaxInflightBuffers;
-
-    // Finalize rendering here & push the command buffer to the GPU
-    [commandBuffer commit];
+  // Finalize rendering here & push the command buffer to the GPU
+  [commandBuffer commit];
 }
 
 - (void)_reshape
