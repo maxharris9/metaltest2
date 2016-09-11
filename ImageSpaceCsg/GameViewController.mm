@@ -57,6 +57,14 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   GBuffer *_gBufferCylinderFront;
   GPipeLine *_gPipeline;
   Quad *_quad;
+
+  // Merge Compute Shader
+  id <MTLTexture> _mergeScratchTextures[6];
+  int _scratchTextureIndex;
+
+  id<MTLComputePipelineState> _mergePipeline;
+  id<MTLCommandBuffer> _mergeCommandBuffer;
+  id<MTLComputeCommandEncoder> _mergeCommandEncoder;
 }
 
 - (void)viewDidLoad
@@ -127,6 +135,32 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   
   // Load all the shader files with a metal file extension in the project
   _defaultLibrary = [_device newDefaultLibrary];
+}
+
+- (void)_setupMergeComputeShader
+{
+  _scratchTextureIndex = 0;
+  id<MTLFunction> kernelFunction = [_defaultLibrary newFunctionWithName:@"mergeDepthBuffers"];
+  
+  NSError *error;
+  _mergePipeline = [_device  newComputePipelineStateWithFunction:kernelFunction error:&error];
+  
+  vector_float2 screenSize = (vector_float2){static_cast<float>(self.view.bounds.size.width * 2), static_cast<float>(self.view.bounds.size.height * 2)};
+
+  MTLTextureDescriptor *scratchTextureDescriptors[6];
+  
+  for (int i=0; i<6; i++) {
+    scratchTextureDescriptors[i] = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatR32Float
+                                                                            width:(int)screenSize[0]
+                                                                           height:(int)screenSize[1]
+                                                                        mipmapped:false];
+    
+    [scratchTextureDescriptors[i] setPixelFormat:MTLPixelFormatR32Float];
+    [scratchTextureDescriptors[i] setMipmapLevelCount:1];
+    [scratchTextureDescriptors[i] setUsage:MTLTextureUsageShaderWrite | MTLTextureUsageShaderRead];
+    
+    _mergeScratchTextures[i] = [_device newTextureWithDescriptor:scratchTextureDescriptors[i]];
+  }
 }
 
 - (void)_loadAssets
@@ -236,6 +270,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   textureDesc.height = self.view.bounds.size.height * 2;
   textureDesc.width = self.view.bounds.size.width * 2;
   textureDesc.pixelFormat = MTLPixelFormatBGRA8Unorm;
+  
+  [self _setupMergeComputeShader];
 }
 
 - (void)renderGBuffer:(id <MTLCommandBuffer>)commandBuffer renderPassDesc:(MTLRenderPassDescriptor*)renderPassDescriptor depthStencilState:(id <MTLDepthStencilState>)dss debugGroup:(NSString*)dg mesh:(MTKMesh*)mesh {
@@ -271,6 +307,34 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   }
 }
 
+- (void)_mergeDepthBuffers
+{
+  MTLSize threadgroupCounts = MTLSizeMake(8, 8, 1);
+  MTLSize threadgroups = MTLSizeMake([_mergeScratchTextures[0] width] / threadgroupCounts.width,
+                                     [_mergeScratchTextures[0] height] / threadgroupCounts.height,
+                                     1);
+  
+  _mergeCommandBuffer = [_commandQueue commandBuffer];
+  _mergeCommandEncoder = [_mergeCommandBuffer computeCommandEncoder];
+  
+  [_mergeCommandEncoder setComputePipelineState:_mergePipeline];
+  
+  // merge inputs
+  [_mergeCommandEncoder setTexture:_gBufferBoxBack.depthTexture atIndex:0];
+  [_mergeCommandEncoder setTexture:_gBufferBoxFront.depthTexture atIndex:1];
+  [_mergeCommandEncoder setTexture:_gBufferCylinderBack.depthTexture atIndex:2];
+  [_mergeCommandEncoder setTexture:_gBufferCylinderFront.depthTexture atIndex:3];
+  
+  // merge outputs
+  [_mergeCommandEncoder setTexture:_mergeScratchTextures[_scratchTextureIndex] atIndex:4];
+  [_mergeCommandEncoder setTexture:_mergeScratchTextures[_scratchTextureIndex+1] atIndex:5];
+  
+  [_mergeCommandEncoder dispatchThreadgroups:threadgroups threadsPerThreadgroup:threadgroupCounts];
+  [_mergeCommandEncoder endEncoding];
+  [_mergeCommandBuffer commit];
+  [_mergeCommandBuffer waitUntilCompleted];
+}
+
 - (void)_renderOnePass:(id <MTLCommandBuffer>)commandBuffer
 {
   // Obtain a renderPassDescriptor generated from the view's drawable textures
@@ -285,16 +349,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
     [renderEncoder pushDebugGroup:@"DrawFronts"];
     [renderEncoder setRenderPipelineState:_pipelineStateFront];
-    
-    [_quad render:_constantDataBufferIndex
-          encoder:renderEncoder
-     withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
-                    _gBufferBoxBack.depthTexture,
-                    _gBufferBoxFront.depthTexture,
-                    _gBufferCylinderBack.depthTexture,
-                    _gBufferCylinderFront.depthTexture
-                   ]
-    ];
 
     
     // other textures (texture2d<float> cylinderFront [[ texture(0) ]])
@@ -302,6 +356,16 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture // normals
     [renderEncoder popDebugGroup];
 
+    [self _mergeDepthBuffers];
+    
+    [_quad render:_constantDataBufferIndex
+          encoder:renderEncoder
+     withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
+                    _mergeScratchTextures[_scratchTextureIndex],
+                    _mergeScratchTextures[_scratchTextureIndex+1]
+                    ]
+     ];
+    
     
 //    [renderEncoder pushDebugGroup:@"DrawBacks"];
 //    [renderEncoder setRenderPipelineState:_pipelineStateBack];

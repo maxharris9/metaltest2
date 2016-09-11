@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06A154841D85FBD6008198B4 /* merge.metal in Sources */ = {isa = PBXBuildFile; fileRef = 06A154831D85FBD6008198B4 /* merge.metal */; };
 		D090D3791C0E59BC00019855 /* Quad.m in Sources */ = {isa = PBXBuildFile; fileRef = D090D3781C0E59BC00019855 /* Quad.m */; };
 		D0F112B91C0E442800C9E780 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112B81C0E442800C9E780 /* AppDelegate.m */; };
 		D0F112BC1C0E442800C9E780 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112BB1C0E442800C9E780 /* main.m */; };
@@ -32,6 +33,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		06A154831D85FBD6008198B4 /* merge.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = merge.metal; sourceTree = "<group>"; };
 		D090D3771C0E59BC00019855 /* Quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Quad.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D090D3781C0E59BC00019855 /* Quad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Quad.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D090D37A1C0E62A900019855 /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = math.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -138,6 +140,7 @@
 				D0F112C21C0E442800C9E780 /* SharedStructures.h */,
 				D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */,
 				D0F112C01C0E442800C9E780 /* Shaders.metal */,
+				06A154831D85FBD6008198B4 /* merge.metal */,
 			);
 			name = shaders;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				D090D3791C0E59BC00019855 /* Quad.m in Sources */,
 				D0F112BF1C0E442800C9E780 /* GameViewController.mm in Sources */,
 				D0F112B91C0E442800C9E780 /* AppDelegate.m in Sources */,
+				06A154841D85FBD6008198B4 /* merge.metal in Sources */,
 				D0F112E11C0E4A0A00C9E780 /* GPipeLine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
