@@ -10,7 +10,7 @@
 
 @interface Quad : NSObject
 {
-    matrix_float4x4 mvpMatrix;
+  matrix_float4x4 mvpMatrix;
 }
 
 - (id)initWithDevice:(id<MTLDevice>)_device;
