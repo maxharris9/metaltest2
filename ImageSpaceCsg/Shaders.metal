@@ -36,10 +36,11 @@ vertex ColorInOut combinerVert(device vertex_t* vertex_array [[ buffer(0) ]],
   return out;
 }
 
+/*
 fragment float4 combinerFragFront(ColorInOut in [[stage_in]],
                        depth2d<float> boxBackDepth [[ texture(0) ]],
-                       depth2d<float> cylinderBackDepth [[ texture(1) ]],
-                       depth2d<float> boxFrontDepth [[ texture(2) ]],
+                       depth2d<float> boxFrontDepth [[ texture(1) ]],
+                       depth2d<float> cylinderBackDepth [[ texture(2) ]],
                        depth2d<float> cylinderFrontDepth [[ texture(3) ]])
 {
   constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
@@ -72,8 +73,8 @@ fragment float4 combinerFragFront(ColorInOut in [[stage_in]],
 
 fragment float4 combinerFragBack(ColorInOut in [[stage_in]],
                                 depth2d<float> boxBackDepth [[ texture(0) ]],
-                                depth2d<float> cylinderBackDepth [[ texture(1) ]],
-                                depth2d<float> boxFrontDepth [[ texture(2) ]],
+                                depth2d<float> boxFrontDepth [[ texture(1) ]],
+                                depth2d<float> cylinderBackDepth [[ texture(2) ]],
                                 depth2d<float> cylinderFrontDepth [[ texture(3) ]])
 {
 constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
@@ -97,4 +98,20 @@ constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
   float4 foo = (newlyCut.r < 1) ? cylBack : black;
 
   return (pow(foo, 90) - 0.6);
+}
+*/
+
+
+fragment float4 toScreenFrag(ColorInOut in [[stage_in]],
+                             depth2d<float> sceneDepthBack [[ texture(0) ]],
+                             depth2d<float> sceneDepthFront [[ texture(1) ]])
+{
+  constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
+
+  float4 sceneBack = sceneDepthBack.sample(texSampler, in.texCoord);
+  float4 sceneFront = sceneDepthFront.sample(texSampler, in.texCoord);
+
+  float4 finally = max(sceneBack, sceneFront);
+  
+  return (pow(finally, 90) - 0.6);
 }

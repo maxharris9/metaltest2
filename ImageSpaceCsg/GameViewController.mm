@@ -187,8 +187,9 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   _dynamicConstantBuffer.label = @"UniformBuffer";
   
   // load the fragment and vertex programs into the library
-  id <MTLFunction> fragmentProgramFront = [_defaultLibrary newFunctionWithName:@"combinerFragFront"];
-  id <MTLFunction> fragmentProgramBack = [_defaultLibrary newFunctionWithName:@"combinerFragBack"];
+//  id <MTLFunction> fragmentProgramFront = [_defaultLibrary newFunctionWithName:@"combinerFragFront"];
+//  id <MTLFunction> fragmentProgramBack = [_defaultLibrary newFunctionWithName:@"combinerFragBack"];
+  id <MTLFunction> fragmentProgramToScreen = [_defaultLibrary newFunctionWithName:@"toScreenFrag"];
   id <MTLFunction> vertexProgram = [_defaultLibrary newFunctionWithName:@"combinerVert"];
 
   // Create a vertex descriptor from the MTKMesh
@@ -201,7 +202,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   pipelineStateFrontDescriptor.label = @"FrontPipeline";
   pipelineStateFrontDescriptor.sampleCount = _view.sampleCount;
   pipelineStateFrontDescriptor.vertexFunction = vertexProgram;
-  pipelineStateFrontDescriptor.fragmentFunction = fragmentProgramFront;
+  pipelineStateFrontDescriptor.fragmentFunction = fragmentProgramToScreen;
   pipelineStateFrontDescriptor.vertexDescriptor = vertexDescriptor;
   pipelineStateFrontDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
   pipelineStateFrontDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
@@ -213,22 +214,22 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     NSLog(@"Failed to created pipeline state, error %@", error);
   }
 
-  // Create a reusable pipeline state
-  MTLRenderPipelineDescriptor *pipelineStateBackDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-  pipelineStateBackDescriptor.label = @"BackPipeline";
-  pipelineStateBackDescriptor.sampleCount = _view.sampleCount;
-  pipelineStateBackDescriptor.vertexFunction = vertexProgram;
-  pipelineStateBackDescriptor.fragmentFunction = fragmentProgramBack;
-  pipelineStateBackDescriptor.vertexDescriptor = vertexDescriptor;
-  pipelineStateBackDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
-  pipelineStateBackDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
-  pipelineStateBackDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
-  
-  error = NULL;
-  _pipelineStateBack = [_device newRenderPipelineStateWithDescriptor:pipelineStateBackDescriptor error:&error];
-  if (!_pipelineStateBack) {
-    NSLog(@"Failed to created pipeline state, error %@", error);
-  }
+//  // Create a reusable pipeline state
+//  MTLRenderPipelineDescriptor *pipelineStateBackDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+//  pipelineStateBackDescriptor.label = @"BackPipeline";
+//  pipelineStateBackDescriptor.sampleCount = _view.sampleCount;
+//  pipelineStateBackDescriptor.vertexFunction = vertexProgram;
+//  pipelineStateBackDescriptor.fragmentFunction = fragmentProgramBack;
+//  pipelineStateBackDescriptor.vertexDescriptor = vertexDescriptor;
+//  pipelineStateBackDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
+//  pipelineStateBackDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
+//  pipelineStateBackDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
+//  
+//  error = NULL;
+//  _pipelineStateBack = [_device newRenderPipelineStateWithDescriptor:pipelineStateBackDescriptor error:&error];
+//  if (!_pipelineStateBack) {
+//    NSLog(@"Failed to created pipeline state, error %@", error);
+//  }
 
   MTLTextureDescriptor* textureDesc = [[MTLTextureDescriptor alloc] init];
   textureDesc.textureType = MTLTextureType2D;
@@ -281,7 +282,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
     renderEncoder.label = @"CubeRenderEncoder";
     
-    // Set context state
+
     [renderEncoder pushDebugGroup:@"DrawFronts"];
     [renderEncoder setRenderPipelineState:_pipelineStateFront];
     
@@ -289,37 +290,36 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
           encoder:renderEncoder
      withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
                     _gBufferBoxBack.depthTexture,
-                    _gBufferCylinderBack.depthTexture,
                     _gBufferBoxFront.depthTexture,
+                    _gBufferCylinderBack.depthTexture,
                     _gBufferCylinderFront.depthTexture
                    ]
     ];
+
+    
     // other textures (texture2d<float> cylinderFront [[ texture(0) ]])
     // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[0].texture, // albedo
     // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture // normals
     [renderEncoder popDebugGroup];
 
     
-    [renderEncoder pushDebugGroup:@"DrawBacks"];
-    [renderEncoder setRenderPipelineState:_pipelineStateBack];
-    
-    [_quad render:_constantDataBufferIndex
-          encoder:renderEncoder
-     withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
-                    _gBufferBoxBack.depthTexture,
-                    _gBufferCylinderBack.depthTexture,
-                    _gBufferBoxFront.depthTexture,
-                    _gBufferCylinderFront.depthTexture
-                   ]
-    ];
-    [renderEncoder popDebugGroup];
+//    [renderEncoder pushDebugGroup:@"DrawBacks"];
+//    [renderEncoder setRenderPipelineState:_pipelineStateBack];
+//    
+//    [_quad render:_constantDataBufferIndex
+//          encoder:renderEncoder
+//     withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
+//                    _gBufferBoxBack.depthTexture,
+//                    _gBufferBoxFront.depthTexture,
+//                    _gBufferCylinderBack.depthTexture,
+//                    _gBufferCylinderFront.depthTexture
+//                   ]
+//    ];
+//    [renderEncoder popDebugGroup];
 
     
     // We're done encoding commands
     [renderEncoder endEncoding];
-    
-    // Schedule a present once the framebuffer is complete using the current drawable
-    [commandBuffer presentDrawable:_view.currentDrawable];
   }
 }
 
@@ -364,6 +364,9 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                  mesh:_cylinderMesh];
 
   [self _renderOnePass:commandBuffer];
+  
+  // schedule a present once the framebuffer is complete using the current drawable
+  [commandBuffer presentDrawable:_view.currentDrawable];
 
   // The render assumes it can now increment the buffer index and that the previous index won't be touched until we cycle back around to the same index
   _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kMaxInflightBuffers;
