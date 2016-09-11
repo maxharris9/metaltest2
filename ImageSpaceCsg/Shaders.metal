@@ -107,11 +107,9 @@ fragment float4 toScreenFrag(ColorInOut in [[stage_in]],
                              depth2d<float> sceneDepthFront [[ texture(1) ]])
 {
   constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
-
-  float4 sceneBack = sceneDepthBack.sample(texSampler, in.texCoord);
+  // float4 sceneBack = sceneDepthBack.sample(texSampler, in.texCoord);
   float4 sceneFront = sceneDepthFront.sample(texSampler, in.texCoord);
-
-  float4 finally = max(sceneBack, sceneFront);
+  // float4 finally = min(sceneBack, sceneFront);
   
-  return (pow(finally, 90) - 0.6);
+  return (pow(sceneFront, 90) - 0.6);
 }

@@ -50,11 +50,15 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   // meshes
   MTKMesh *_boxMesh;
   MTKMesh *_cylinderMesh;
+  MTKMesh *_coneMesh;
   
   GBuffer *_gBufferBoxBack;
-  GBuffer *_gBufferCylinderBack;
   GBuffer *_gBufferBoxFront;
+  GBuffer *_gBufferCylinderBack;
   GBuffer *_gBufferCylinderFront;
+  GBuffer *_gBufferConeBack;
+  GBuffer *_gBufferConeFront;
+  
   GPipeLine *_gPipeline;
   Quad *_quad;
 
@@ -210,6 +214,18 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                                                compareFunction:MTLCompareFunctionLess
                                                     clearDepth:1.0f];
 
+  _gBufferConeBack = [[GBuffer alloc] initWithDepthEnabled:YES
+                                                    device:_device
+                                                screensize:screenSize
+                                           compareFunction:MTLCompareFunctionGreater
+                                                clearDepth:0.0f];
+
+  _gBufferConeFront = [[GBuffer alloc] initWithDepthEnabled:YES
+                                                     device:_device
+                                                 screensize:screenSize
+                                            compareFunction:MTLCompareFunctionLess
+                                                 clearDepth:1.0f];
+  
   _gPipeline = [[GPipeLine alloc] initWithDevice:_device library:_defaultLibrary];
   _quad = [[Quad alloc] initWithDevice:_device];
 
@@ -221,16 +237,26 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                                       inwardNormals:NO
                                           allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
       
-  MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:0.5
+  MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:1.5
                                                     radii:(vector_float2){4,4}
                                            radialSegments:50
                                          verticalSegments:1
                                              geometryType:MDLGeometryKindTriangles
                                             inwardNormals:NO
                                                 allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
+  
+  
+  MDLMesh *coneModel = [MDLMesh newEllipticalConeWithHeight:3.5
+                                                      radii:8.0
+                                             radialSegments:50
+                                           verticalSegments:1
+                                               geometryType:MDLGeometryKindTriangles
+                                              inwardNormals:NO
+                                                  allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
 
   _boxMesh = [[MTKMesh alloc] initWithMesh:boxModel device:_device error:nil];
   _cylinderMesh = [[MTKMesh alloc] initWithMesh:cylinderModel device:_device error:nil];
+  _coneMesh = [[MTKMesh alloc] initWithMesh:coneModel device:_device error:nil];
   
   // Allocate one region of memory for the uniform buffer
   _dynamicConstantBuffer = [_device newBufferWithLength:kMaxBytesPerFrame options:0];
@@ -323,7 +349,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   }
 }
 
-- (void)_mergeDepthBuffers
+- (void)_mergeDepthBuffers:(NSArray *)textures
 {
   MTLSize threadgroupCounts = MTLSizeMake(8, 8, 1);
   MTLSize threadgroups = MTLSizeMake([_mergeScratchTextures[0] width] / threadgroupCounts.width,
@@ -336,14 +362,14 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   [_mergeCommandEncoder setComputePipelineState:_mergePipeline];
   
   // merge inputs
-  [_mergeCommandEncoder setTexture:_gBufferBoxBack.depthTexture atIndex:0];
-  [_mergeCommandEncoder setTexture:_gBufferBoxFront.depthTexture atIndex:1];
-  [_mergeCommandEncoder setTexture:_gBufferCylinderBack.depthTexture atIndex:2];
-  [_mergeCommandEncoder setTexture:_gBufferCylinderFront.depthTexture atIndex:3];
+  [_mergeCommandEncoder setTexture:textures[0] atIndex:0];
+  [_mergeCommandEncoder setTexture:textures[1] atIndex:1];
+  [_mergeCommandEncoder setTexture:textures[2] atIndex:2];
+  [_mergeCommandEncoder setTexture:textures[3] atIndex:3];
   
   // merge outputs
-  [_mergeCommandEncoder setTexture:_mergeScratchTextures[_scratchTextureIndex] atIndex:4];
-  [_mergeCommandEncoder setTexture:_mergeScratchTextures[_scratchTextureIndex+1] atIndex:5];
+  [_mergeCommandEncoder setTexture:textures[4] atIndex:4];
+  [_mergeCommandEncoder setTexture:textures[5] atIndex:5];
   
   [_mergeCommandEncoder dispatchThreadgroups:threadgroups threadsPerThreadgroup:threadgroupCounts];
   [_mergeCommandEncoder endEncoding];
@@ -358,47 +384,46 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   
   if (renderPassDescriptor != nil) // If we have a valid drawable, begin the commands to render into it
   {
-    // Create a render command encoder so we can render into something
-    id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-    renderEncoder.label = @"CubeRenderEncoder";
-    
-
-    [renderEncoder pushDebugGroup:@"DrawFronts"];
-    [renderEncoder setRenderPipelineState:_pipelineStateFront];
-
-    
     // other textures (texture2d<float> cylinderFront [[ texture(0) ]])
     // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[0].texture, // albedo
     // [_gBufferCylinderFront renderPassDescriptor].colorAttachments[1].texture // normals
-    [renderEncoder popDebugGroup];
 
-    [self _mergeDepthBuffers];
+    [self _mergeDepthBuffers:@[
+                                // inputs
+                                _gBufferBoxBack.depthTexture,
+                                _gBufferBoxFront.depthTexture,
+                                _gBufferConeBack.depthTexture,
+                                _gBufferConeFront.depthTexture,
+                                // outputs
+                                _mergeScratchTextures[_scratchTextureIndex],
+                                _mergeScratchTextures[_scratchTextureIndex+1]
+                              ]
+    ];
     
+    [self _mergeDepthBuffers:@[
+                                // inputs
+                                _mergeScratchTextures[_scratchTextureIndex],
+                                _mergeScratchTextures[_scratchTextureIndex+1],
+                                _gBufferCylinderBack.depthTexture,
+                                _gBufferCylinderFront.depthTexture,
+                                // outputs
+                                _mergeScratchTextures[_scratchTextureIndex],
+                                _mergeScratchTextures[_scratchTextureIndex+1]
+                              ]
+    ];
+    
+    id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+    renderEncoder.label = @"FinalRenderEncoder";
+    [renderEncoder pushDebugGroup:@"Draw Final Quad"];
+    [renderEncoder setRenderPipelineState:_pipelineStateFront];
     [_quad render:_constantDataBufferIndex
           encoder:renderEncoder
      withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
-                    _mergeScratchTextures[_scratchTextureIndex],
-                    _mergeScratchTextures[_scratchTextureIndex+1]
-                    ]
-     ];
-    
-    
-//    [renderEncoder pushDebugGroup:@"DrawBacks"];
-//    [renderEncoder setRenderPipelineState:_pipelineStateBack];
-//    
-//    [_quad render:_constantDataBufferIndex
-//          encoder:renderEncoder
-//     withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
-//                    _gBufferBoxBack.depthTexture,
-//                    _gBufferBoxFront.depthTexture,
-//                    _gBufferCylinderBack.depthTexture,
-//                    _gBufferCylinderFront.depthTexture
-//                   ]
-//    ];
-//    [renderEncoder popDebugGroup];
-
-    
-    // We're done encoding commands
+                     _mergeScratchTextures[_scratchTextureIndex],
+                     _mergeScratchTextures[_scratchTextureIndex+1]
+                   ]
+    ];
+    [renderEncoder popDebugGroup];
     [renderEncoder endEncoding];
   }
 }
@@ -443,6 +468,18 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
            debugGroup:@"DrawCylinderFront"
                  mesh:_cylinderMesh];
 
+  [self renderGBuffer:commandBuffer
+       renderPassDesc:[_gBufferConeBack renderPassDescriptor]
+    depthStencilState:[_gBufferConeBack _depthState]
+           debugGroup:@"DrawConeBack"
+                 mesh:_coneMesh];
+  
+  [self renderGBuffer:commandBuffer
+       renderPassDesc:[_gBufferConeFront renderPassDescriptor]
+    depthStencilState:[_gBufferConeFront _depthState]
+           debugGroup:@"DrawConeFront"
+                 mesh:_coneMesh];
+
   [self _renderOnePass:commandBuffer];
   
   // schedule a present once the framebuffer is complete using the current drawable
@@ -462,6 +499,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   [_gBufferBoxFront setScreenSize:screenSize device:_device];
   [_gBufferCylinderBack setScreenSize:screenSize device:_device];
   [_gBufferCylinderFront setScreenSize:screenSize device:_device];
+  [_gBufferConeBack setScreenSize:screenSize device:_device];
+  [_gBufferConeFront setScreenSize:screenSize device:_device];
   
   [_quad _reshape:screenSize];
   
