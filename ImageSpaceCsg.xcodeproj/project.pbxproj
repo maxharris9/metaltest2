@@ -54,8 +54,8 @@
 		D0F112DF1C0E4A0A00C9E780 /* GPipeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GPipeLine.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GPipeLine.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; lineEnding = 0; path = gBuffer.metal; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.metal; };
-		E7C7ED4E1D03A295008FEA16 /* csg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = csg.cpp; sourceTree = "<group>"; };
-		E7C7ED501D03A2B4008FEA16 /* csg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = csg.h; sourceTree = "<group>"; };
+		E7C7ED4E1D03A295008FEA16 /* csg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = csg.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		E7C7ED501D03A2B4008FEA16 /* csg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = csg.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +112,6 @@
 				D0F112C81C0E442800C9E780 /* Info.plist */,
 				D0F112BA1C0E442800C9E780 /* Supporting Files */,
 			);
-			name = ImageSpaceCsg;
 			path = ImageSpaceCsg;
 			sourceTree = "<group>";
 		};
@@ -130,7 +129,6 @@
 				D0F112D11C0E442900C9E780 /* ImageSpaceCsgUITests.m */,
 				D0F112D31C0E442900C9E780 /* Info.plist */,
 			);
-			name = ImageSpaceCsgUITests;
 			path = ImageSpaceCsgUITests;
 			sourceTree = "<group>";
 		};
