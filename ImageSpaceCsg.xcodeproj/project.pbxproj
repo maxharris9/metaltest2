@@ -34,6 +34,8 @@
 
 /* Begin PBXFileReference section */
 		06A154831D85FBD6008198B4 /* merge.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = merge.metal; sourceTree = "<group>"; };
+		06A154861D86134B008198B4 /* vec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vec.h; sourceTree = "<group>"; };
+		06A154871D86135A008198B4 /* orbit-camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "orbit-camera.h"; sourceTree = "<group>"; };
 		D090D3771C0E59BC00019855 /* Quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Quad.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D090D3781C0E59BC00019855 /* Quad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Quad.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D090D37A1C0E62A900019855 /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = math.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -78,6 +80,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		06A154851D86133C008198B4 /* camera */ = {
+			isa = PBXGroup;
+			children = (
+				06A154861D86134B008198B4 /* vec.h */,
+				06A154871D86135A008198B4 /* orbit-camera.h */,
+			);
+			name = camera;
+			sourceTree = "<group>";
+		};
 		D0F112AB1C0E442800C9E780 = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +110,7 @@
 		D0F112B61C0E442800C9E780 /* ImageSpaceCsg */ = {
 			isa = PBXGroup;
 			children = (
+				06A154851D86133C008198B4 /* camera */,
 				E7DD31AD1CF132080022DE55 /* shaders */,
 				E7DD31AE1CF132440022DE55 /* pipelines */,
 				E7DD31AF1CF1327F0022DE55 /* buffers */,
@@ -390,6 +402,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_X86_VECTOR_INSTRUCTIONS = sse4.1;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = ImageSpaceCsg/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -402,6 +415,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_X86_VECTOR_INSTRUCTIONS = sse4.1;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = ImageSpaceCsg/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";

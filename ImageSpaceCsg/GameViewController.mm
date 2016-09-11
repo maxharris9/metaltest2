@@ -17,6 +17,9 @@
 #import "math.h"
 #import "csg.h"
 
+#import "vec.h"
+#import "orbit-camera.h"
+
 // The max number of command buffers in flight
 static const NSUInteger kMaxInflightBuffers = 3;
 
@@ -72,6 +75,12 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
   // basic camera controls
   BOOL _keys[63236];
+
+  struct {
+    uint8_t down;
+    float x, y;
+  } mouse;
+
 }
 
 - (void)viewDidLoad
@@ -131,6 +140,21 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     return event;
   }];
 
+  [[_view window] setAcceptsMouseMovedEvents:true];
+
+  [NSEvent addLocalMonitorForEventsMatchingMask:NSRightMouseUp handler:^(NSEvent *event) {
+    mouse.down = false;
+    return event;
+  }];
+
+  [NSEvent addLocalMonitorForEventsMatchingMask:NSRightMouseDown handler:^(NSEvent *event) {
+    mouse.down = true;
+    NSPoint mouseLoc = [NSEvent mouseLocation]; //get current mouse position
+    mouse.x = mouseLoc.x;
+    mouse.y = mouseLoc.y;
+
+    return event;
+  }];
 }
 
 - (void)_setupView
@@ -143,6 +167,13 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   // Setup the render target, choose values based on your app
   _view.sampleCount = 1;
   _view.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
+
+  // Setup the orbit camera
+  vec3 eye = vec3_create(0.0f, 0.0f, 2.5);
+  vec3 center = vec3f(0.0f);
+  vec3 up = vec3_create(0.0, 1.0, 0.0 );
+
+  orbit_camera_init(eye, center, up);
 }
 
 - (void)_setupMetal
@@ -514,10 +545,25 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 - (void)_update
 {
   [_quad update:_constantDataBufferIndex];
-  
-  matrix_float4x4 base_model = matrix_multiply(
-                                               matrix_from_translation(0.0f, 0.0f, 0.0f),
-                                               matrix_multiply(matrix_from_rotation(_rotation[1], 0.0f, 1.0f, 0.0f), matrix_from_rotation(_rotation[0], 1.0f, 0.0f, 0.0f)));
+
+  if (mouse.down) {
+    NSPoint mouseLoc = [NSEvent mouseLocation]; //get current mouse position
+
+    vector_float2 screenSize = (vector_float2){static_cast<float>(self.view.bounds.size.width * 2), static_cast<float>(self.view.bounds.size.height * 2)};
+
+    orbit_camera_rotate(0, 0, 5 * (mouse.x - mouseLoc.x) / screenSize[0], 5 * (mouseLoc.y - mouse.y) / screenSize[1]);
+
+    mouse.x = mouseLoc.x;
+    mouse.y = mouseLoc.y;
+  }
+
+  matrix_float4x4 base_model;
+//  = matrix_multiply(
+//                                               matrix_from_translation(0.0f, 0.0f, 0.0f),
+//                                               matrix_multiply(matrix_from_rotation(_rotation[1], 0.0f, 1.0f, 0.0f), matrix_from_rotation(_rotation[0], 1.0f, 0.0f, 0.0f)));
+//  orbit_cameraView
+  orbit_camera_view((float *)&base_model);
+
   matrix_float4x4 modelViewMatrix = matrix_multiply(_viewMatrix, base_model);
   
   // Load constant buffer data into appropriate buffer at current index
@@ -528,24 +574,21 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
 
   if (_keys[NSRightArrowFunctionKey]) {
-    _rotation[1] += 0.1f;
+    orbit_camera_rotate(0, 0, .1, 0);
   }
 
   if (_keys[NSLeftArrowFunctionKey]) {
-    _rotation[1] -= 0.1f;
+    orbit_camera_rotate(0, 0, -.1, 0);
   }
 
 
   if (_keys[NSUpArrowFunctionKey]) {
-    _rotation[0] += 0.1f;
+    orbit_camera_rotate(0, 0, 0, .1);
   }
 
   if (_keys[NSDownArrowFunctionKey]) {
-    _rotation[0] -= 0.1f;
+    orbit_camera_rotate(0, 0, 0, -.1);
   }
-
-
-//  _rotation += 0.01f;
 }
 
 // Called whenever view changes orientation or layout is changed
