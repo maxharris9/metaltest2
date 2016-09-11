@@ -14,7 +14,7 @@
 		D0F112C11C0E442800C9E780 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = D0F112C01C0E442800C9E780 /* Shaders.metal */; };
 		D0F112C41C0E442800C9E780 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0F112C31C0E442800C9E780 /* Assets.xcassets */; };
 		D0F112C71C0E442800C9E780 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0F112C51C0E442800C9E780 /* MainMenu.xib */; };
-		D0F112D21C0E442900C9E780 /* MetalKitDeferredUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112D11C0E442900C9E780 /* MetalKitDeferredUITests.m */; };
+		D0F112D21C0E442900C9E780 /* ImageSpaceCsgUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112D11C0E442900C9E780 /* ImageSpaceCsgUITests.m */; };
 		D0F112DE1C0E46D500C9E780 /* GBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112DD1C0E46D500C9E780 /* GBuffer.m */; };
 		D0F112E11C0E4A0A00C9E780 /* GPipeLine.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */; };
 		D0F112E31C0E4CCB00C9E780 /* gBuffer.metal in Sources */ = {isa = PBXBuildFile; fileRef = D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */; };
@@ -32,28 +32,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D090D3771C0E59BC00019855 /* Quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quad.h; sourceTree = "<group>"; };
-		D090D3781C0E59BC00019855 /* Quad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Quad.m; sourceTree = "<group>"; };
-		D090D37A1C0E62A900019855 /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
-		D0F112B41C0E442800C9E780 /* MetalKitDeferredLighting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalKitDeferredLighting.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D0F112B71C0E442800C9E780 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		D0F112B81C0E442800C9E780 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		D0F112BB1C0E442800C9E780 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		D0F112BD1C0E442800C9E780 /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
-		D0F112BE1C0E442800C9E780 /* GameViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GameViewController.mm; sourceTree = "<group>"; };
-		D0F112C01C0E442800C9E780 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		D0F112C21C0E442800C9E780 /* SharedStructures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedStructures.h; sourceTree = "<group>"; };
+		D090D3771C0E59BC00019855 /* Quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Quad.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		D090D3781C0E59BC00019855 /* Quad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Quad.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		D090D37A1C0E62A900019855 /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = math.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		D0F112B41C0E442800C9E780 /* ImageSpaceCsg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageSpaceCsg.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0F112B71C0E442800C9E780 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		D0F112B81C0E442800C9E780 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		D0F112BB1C0E442800C9E780 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		D0F112BD1C0E442800C9E780 /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GameViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		D0F112BE1C0E442800C9E780 /* GameViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = GameViewController.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		D0F112C01C0E442800C9E780 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; lineEnding = 0; path = Shaders.metal; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.metal; };
+		D0F112C21C0E442800C9E780 /* SharedStructures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = SharedStructures.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D0F112C31C0E442800C9E780 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D0F112C61C0E442800C9E780 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		D0F112C81C0E442800C9E780 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D0F112CD1C0E442800C9E780 /* MetalKitDeferredLighting.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MetalKitDeferredLighting.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D0F112D11C0E442900C9E780 /* MetalKitDeferredUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MetalKitDeferredUITests.m; sourceTree = "<group>"; };
+		D0F112CD1C0E442800C9E780 /* ImageSpaceCsg.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageSpaceCsg.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0F112D11C0E442900C9E780 /* ImageSpaceCsgUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ImageSpaceCsgUITests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D0F112D31C0E442900C9E780 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D0F112DC1C0E46D500C9E780 /* GBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBuffer.h; sourceTree = "<group>"; };
-		D0F112DD1C0E46D500C9E780 /* GBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBuffer.m; sourceTree = "<group>"; };
-		D0F112DF1C0E4A0A00C9E780 /* GPipeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPipeLine.h; sourceTree = "<group>"; };
-		D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPipeLine.m; sourceTree = "<group>"; };
-		D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = gBuffer.metal; sourceTree = "<group>"; };
+		D0F112DC1C0E46D500C9E780 /* GBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GBuffer.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		D0F112DD1C0E46D500C9E780 /* GBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GBuffer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		D0F112DF1C0E4A0A00C9E780 /* GPipeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GPipeLine.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		D0F112E01C0E4A0A00C9E780 /* GPipeLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GPipeLine.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		D0F112E21C0E4CCB00C9E780 /* gBuffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; lineEnding = 0; path = gBuffer.metal; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.metal; };
 		E7C7ED4E1D03A295008FEA16 /* csg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = csg.cpp; sourceTree = "<group>"; };
 		E7C7ED501D03A2B4008FEA16 /* csg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = csg.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,8 +79,8 @@
 		D0F112AB1C0E442800C9E780 = {
 			isa = PBXGroup;
 			children = (
-				D0F112B61C0E442800C9E780 /* MetalKitDeferred */,
-				D0F112D01C0E442900C9E780 /* MetalKitDeferredUITests */,
+				D0F112B61C0E442800C9E780 /* ImageSpaceCsg */,
+				D0F112D01C0E442900C9E780 /* ImageSpaceCsgUITests */,
 				D0F112B51C0E442800C9E780 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,13 +88,13 @@
 		D0F112B51C0E442800C9E780 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D0F112B41C0E442800C9E780 /* MetalKitDeferredLighting.app */,
-				D0F112CD1C0E442800C9E780 /* MetalKitDeferredLighting.xctest */,
+				D0F112B41C0E442800C9E780 /* ImageSpaceCsg.app */,
+				D0F112CD1C0E442800C9E780 /* ImageSpaceCsg.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D0F112B61C0E442800C9E780 /* MetalKitDeferred */ = {
+		D0F112B61C0E442800C9E780 /* ImageSpaceCsg */ = {
 			isa = PBXGroup;
 			children = (
 				E7DD31AD1CF132080022DE55 /* shaders */,
@@ -112,6 +112,7 @@
 				D0F112C81C0E442800C9E780 /* Info.plist */,
 				D0F112BA1C0E442800C9E780 /* Supporting Files */,
 			);
+			name = ImageSpaceCsg;
 			path = MetalKitDeferred;
 			sourceTree = "<group>";
 		};
@@ -123,12 +124,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		D0F112D01C0E442900C9E780 /* MetalKitDeferredUITests */ = {
+		D0F112D01C0E442900C9E780 /* ImageSpaceCsgUITests */ = {
 			isa = PBXGroup;
 			children = (
-				D0F112D11C0E442900C9E780 /* MetalKitDeferredUITests.m */,
+				D0F112D11C0E442900C9E780 /* ImageSpaceCsgUITests.m */,
 				D0F112D31C0E442900C9E780 /* Info.plist */,
 			);
+			name = ImageSpaceCsgUITests;
 			path = MetalKitDeferredUITests;
 			sourceTree = "<group>";
 		};
@@ -165,9 +167,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D0F112B31C0E442800C9E780 /* MetalKitDeferredLighting */ = {
+		D0F112B31C0E442800C9E780 /* ImageSpaceCsg */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D0F112D61C0E442900C9E780 /* Build configuration list for PBXNativeTarget "MetalKitDeferredLighting" */;
+			buildConfigurationList = D0F112D61C0E442900C9E780 /* Build configuration list for PBXNativeTarget "ImageSpaceCsg" */;
 			buildPhases = (
 				D0F112B01C0E442800C9E780 /* Sources */,
 				D0F112B11C0E442800C9E780 /* Frameworks */,
@@ -177,14 +179,14 @@
 			);
 			dependencies = (
 			);
-			name = MetalKitDeferredLighting;
+			name = ImageSpaceCsg;
 			productName = MetalKitDeferred;
-			productReference = D0F112B41C0E442800C9E780 /* MetalKitDeferredLighting.app */;
+			productReference = D0F112B41C0E442800C9E780 /* ImageSpaceCsg.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D0F112CC1C0E442800C9E780 /* MetalKitDeferredLightingUITests */ = {
+		D0F112CC1C0E442800C9E780 /* ImageSpaceCsgUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D0F112D91C0E442900C9E780 /* Build configuration list for PBXNativeTarget "MetalKitDeferredLightingUITests" */;
+			buildConfigurationList = D0F112D91C0E442900C9E780 /* Build configuration list for PBXNativeTarget "ImageSpaceCsgUITests" */;
 			buildPhases = (
 				D0F112C91C0E442800C9E780 /* Sources */,
 				D0F112CA1C0E442800C9E780 /* Frameworks */,
@@ -195,9 +197,9 @@
 			dependencies = (
 				D0F112CF1C0E442800C9E780 /* PBXTargetDependency */,
 			);
-			name = MetalKitDeferredLightingUITests;
+			name = ImageSpaceCsgUITests;
 			productName = MetalKitDeferredUITests;
-			productReference = D0F112CD1C0E442800C9E780 /* MetalKitDeferredLighting.xctest */;
+			productReference = D0F112CD1C0E442800C9E780 /* ImageSpaceCsg.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -207,7 +209,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0710;
-				ORGANIZATIONNAME = "Bogdan Adam";
+				ORGANIZATIONNAME = "Max Harris";
 				TargetAttributes = {
 					D0F112B31C0E442800C9E780 = {
 						CreatedOnToolsVersion = 7.1.1;
@@ -218,7 +220,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D0F112AF1C0E442800C9E780 /* Build configuration list for PBXProject "MetalKitDeferredLighting" */;
+			buildConfigurationList = D0F112AF1C0E442800C9E780 /* Build configuration list for PBXProject "ImageSpaceCsg" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -231,8 +233,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D0F112B31C0E442800C9E780 /* MetalKitDeferredLighting */,
-				D0F112CC1C0E442800C9E780 /* MetalKitDeferredLightingUITests */,
+				D0F112B31C0E442800C9E780 /* ImageSpaceCsg */,
+				D0F112CC1C0E442800C9E780 /* ImageSpaceCsgUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -277,7 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0F112D21C0E442900C9E780 /* MetalKitDeferredUITests.m in Sources */,
+				D0F112D21C0E442900C9E780 /* ImageSpaceCsgUITests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,7 +288,7 @@
 /* Begin PBXTargetDependency section */
 		D0F112CF1C0E442800C9E780 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D0F112B31C0E442800C9E780 /* MetalKitDeferredLighting */;
+			target = D0F112B31C0E442800C9E780 /* ImageSpaceCsg */;
 			targetProxy = D0F112CE1C0E442800C9E780 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -389,8 +391,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = MetalKitDeferred/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Hypercube.MetalKitDeferred;
-				PRODUCT_NAME = MetalKitDeferredLighting;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Solids.ImageSpaceCsg;
+				PRODUCT_NAME = ImageSpaceCsg;
 			};
 			name = Debug;
 		};
@@ -401,8 +403,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = MetalKitDeferred/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Hypercube.MetalKitDeferred;
-				PRODUCT_NAME = MetalKitDeferredLighting;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Solids.ImageSpaceCsg;
+				PRODUCT_NAME = ImageSpaceCsg;
 			};
 			name = Release;
 		};
@@ -414,7 +416,7 @@
 				INFOPLIST_FILE = MetalKitDeferredUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Hypercube.MetalKitDeferredUITests;
-				PRODUCT_NAME = MetalKitDeferredLighting;
+				PRODUCT_NAME = ImageSpaceCsg;
 				TEST_TARGET_NAME = MetalKitDeferred;
 				USES_XCTRUNNER = YES;
 			};
@@ -427,7 +429,7 @@
 				INFOPLIST_FILE = MetalKitDeferredUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Hypercube.MetalKitDeferredUITests;
-				PRODUCT_NAME = MetalKitDeferredLighting;
+				PRODUCT_NAME = ImageSpaceCsg;
 				TEST_TARGET_NAME = MetalKitDeferred;
 				USES_XCTRUNNER = YES;
 			};
@@ -436,7 +438,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D0F112AF1C0E442800C9E780 /* Build configuration list for PBXProject "MetalKitDeferredLighting" */ = {
+		D0F112AF1C0E442800C9E780 /* Build configuration list for PBXProject "ImageSpaceCsg" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D0F112D41C0E442900C9E780 /* Debug */,
@@ -445,7 +447,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D0F112D61C0E442900C9E780 /* Build configuration list for PBXNativeTarget "MetalKitDeferredLighting" */ = {
+		D0F112D61C0E442900C9E780 /* Build configuration list for PBXNativeTarget "ImageSpaceCsg" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D0F112D71C0E442900C9E780 /* Debug */,
@@ -454,7 +456,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D0F112D91C0E442900C9E780 /* Build configuration list for PBXNativeTarget "MetalKitDeferredLightingUITests" */ = {
+		D0F112D91C0E442900C9E780 /* Build configuration list for PBXNativeTarget "ImageSpaceCsgUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D0F112DA1C0E442900C9E780 /* Debug */,

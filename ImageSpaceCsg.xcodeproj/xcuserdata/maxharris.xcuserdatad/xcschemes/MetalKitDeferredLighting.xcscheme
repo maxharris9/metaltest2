@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D0F112B31C0E442800C9E780"
-               BuildableName = "MetalKitDeferredLighting.app"
-               BlueprintName = "MetalKitDeferredLighting"
-               ReferencedContainer = "container:MetalKitDeferredLighting.xcodeproj">
+               BuildableName = "ImageSpaceCsg.app"
+               BlueprintName = "ImageSpaceCsg"
+               ReferencedContainer = "container:ImageSpaceCsg.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D0F112CC1C0E442800C9E780"
-               BuildableName = "MetalKitDeferredLighting.xctest"
-               BlueprintName = "MetalKitDeferredLightingUITests"
-               ReferencedContainer = "container:MetalKitDeferredLighting.xcodeproj">
+               BuildableName = "ImageSpaceCsg.xctest"
+               BlueprintName = "ImageSpaceCsgUITests"
+               ReferencedContainer = "container:ImageSpaceCsg.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D0F112B31C0E442800C9E780"
-            BuildableName = "MetalKitDeferredLighting.app"
-            BlueprintName = "MetalKitDeferredLighting"
-            ReferencedContainer = "container:MetalKitDeferredLighting.xcodeproj">
+            BuildableName = "ImageSpaceCsg.app"
+            BlueprintName = "ImageSpaceCsg"
+            ReferencedContainer = "container:ImageSpaceCsg.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -66,9 +66,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D0F112B31C0E442800C9E780"
-            BuildableName = "MetalKitDeferredLighting.app"
-            BlueprintName = "MetalKitDeferredLighting"
-            ReferencedContainer = "container:MetalKitDeferredLighting.xcodeproj">
+            BuildableName = "ImageSpaceCsg.app"
+            BlueprintName = "ImageSpaceCsg"
+            ReferencedContainer = "container:ImageSpaceCsg.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -85,9 +85,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D0F112B31C0E442800C9E780"
-            BuildableName = "MetalKitDeferredLighting.app"
-            BlueprintName = "MetalKitDeferredLighting"
-            ReferencedContainer = "container:MetalKitDeferredLighting.xcodeproj">
+            BuildableName = "ImageSpaceCsg.app"
+            BlueprintName = "ImageSpaceCsg"
+            ReferencedContainer = "container:ImageSpaceCsg.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

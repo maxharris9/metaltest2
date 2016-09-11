@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "C2BBC8FD74EAC500F8E0A55F798FEF6F9E3EDB23",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "46BCFBD63867002270D54101E8EBA7626D2AB105" : 0,
+    "C2BBC8FD74EAC500F8E0A55F798FEF6F9E3EDB23" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "7BD0E95C-69F5-48B8-B4B9-C09746B5296C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "46BCFBD63867002270D54101E8EBA7626D2AB105" : "",
+    "C2BBC8FD74EAC500F8E0A55F798FEF6F9E3EDB23" : "metaltest2\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MetalKitDeferredLighting",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MetalKitDeferredLighting.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/maxharris9\/bsp-2d.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "46BCFBD63867002270D54101E8EBA7626D2AB105"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/maxharris9\/metaltest2.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C2BBC8FD74EAC500F8E0A55F798FEF6F9E3EDB23"
+    }
+  ]
+}

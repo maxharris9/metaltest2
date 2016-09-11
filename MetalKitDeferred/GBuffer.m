@@ -2,8 +2,8 @@
 //  GBuffer.m
 //  MetalKitDeferredLighting
 //
-//  Created by Bogdan Adam on 12/1/15.
-//  Copyright © 2015 Bogdan Adam. All rights reserved.
+//  Created by Max Harris on 6/4/16.
+//  Copyright © 2016 Max Harris. All rights reserved.
 //
 
 #import "GBuffer.h"

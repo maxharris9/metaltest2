@@ -2,8 +2,8 @@
 //  Quad.m
 //  MetalKitDeferredLighting
 //
-//  Created by Bogdan Adam on 12/2/15.
-//  Copyright © 2015 Bogdan Adam. All rights reserved.
+//  Created by Max Harris on 6/4/16.
+//  Copyright © 2016 Max Harris. All rights reserved.
 //
 
 #import "Quad.h"
@@ -52,7 +52,7 @@ static const float qQuadVertices[] =
     m_Scale.x = screenSize.x/2.f;
     m_Scale.y = -screenSize.y/2.f;
     
-    if(pVertices != NULL)
+    if (pVertices != NULL)
     {
         // First triangle
         pVertices[0] = -m_Scale.x;
@@ -73,9 +73,7 @@ static const float qQuadVertices[] =
         
         pVertices[25] =  m_Scale.x;
         pVertices[26] =  m_Scale.y;
-        
     }
-    
     
     matrix_float4x4 _projection = ortho2d_oc(0, screenSize.x, 0, screenSize.y, -1.0, 1.0);
     

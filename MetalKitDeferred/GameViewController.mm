@@ -2,8 +2,8 @@
 //  GameViewController.m
 //  MetalKitDeferred
 //
-//  Created by Bogdan Adam on 12/1/15.
-//  Copyright (c) 2015 Bogdan Adam. All rights reserved.
+//  Created by Max Harris on 6/4/2016.
+//  Copyright (c) 2016 Max Harris. All rights reserved.
 //
 
 #import "GameViewController.h"
@@ -56,8 +56,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     GBuffer *_gBufferCylinderFront;
     GPipeLine *_gPipeline;
     Quad *_quad;
-
-    id <MTLTexture> _depthTexture;
 }
 
 - (void)viewDidLoad
@@ -218,8 +216,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     textureDesc.height = self.view.bounds.size.height * 2;
     textureDesc.width = self.view.bounds.size.width * 2;
     textureDesc.pixelFormat = MTLPixelFormatBGRA8Unorm;
-
-    _depthTexture = [_device newTextureWithDescriptor: textureDesc];
 }
 
 - (void)renderGBuffer:(id <MTLCommandBuffer>)commandBuffer renderPassDesc:(MTLRenderPassDescriptor*)renderPassDescriptor depthStencilState:(id <MTLDepthStencilState>)dss debugGroup:(NSString*)dg mesh:(MTKMesh*)mesh {
