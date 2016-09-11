@@ -45,7 +45,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   matrix_float4x4 _projectionMatrix;
   matrix_float4x4 _viewMatrix;
   uniforms_t _uniform_buffer;
-  float _rotation;
+  float _rotation[3];
   
   // meshes
   MTKMesh *_boxMesh;
@@ -65,6 +65,9 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   id<MTLComputePipelineState> _mergePipeline;
   id<MTLCommandBuffer> _mergeCommandBuffer;
   id<MTLComputeCommandEncoder> _mergeCommandEncoder;
+
+  // basic camera controls
+  BOOL _keys[63236];
 }
 
 - (void)viewDidLoad
@@ -111,6 +114,19 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     NSLog(@"Metal is not supported on this device");
     self.view = [[NSView alloc] initWithFrame:self.view.frame];
   }
+
+
+  // Setup key handlers
+  [NSEvent addLocalMonitorForEventsMatchingMask:NSKeyDownMask handler:^(NSEvent *event) {
+    _keys[[[event characters] characterAtIndex:0]] = true;
+    return event;
+  }];
+
+  [NSEvent addLocalMonitorForEventsMatchingMask:NSKeyUpMask handler:^(NSEvent *event) {
+    _keys[[[event characters] characterAtIndex:0]] = false;
+    return event;
+  }];
+
 }
 
 - (void)_setupView
@@ -460,7 +476,9 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 {
   [_quad update:_constantDataBufferIndex];
   
-  matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
+  matrix_float4x4 base_model = matrix_multiply(
+                                               matrix_from_translation(0.0f, 0.0f, 0.0f),
+                                               matrix_multiply(matrix_from_rotation(_rotation[1], 0.0f, 1.0f, 0.0f), matrix_from_rotation(_rotation[0], 1.0f, 0.0f, 0.0f)));
   matrix_float4x4 modelViewMatrix = matrix_multiply(_viewMatrix, base_model);
   
   // Load constant buffer data into appropriate buffer at current index
@@ -469,8 +487,26 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   uniforms->normal_matrix = modelViewMatrix;
   uniforms->modelview_matrix = modelViewMatrix;
   uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
-  
-  _rotation += 0.01f;
+
+  if (_keys[NSRightArrowFunctionKey]) {
+    _rotation[1] += 0.1f;
+  }
+
+  if (_keys[NSLeftArrowFunctionKey]) {
+    _rotation[1] -= 0.1f;
+  }
+
+
+  if (_keys[NSUpArrowFunctionKey]) {
+    _rotation[0] += 0.1f;
+  }
+
+  if (_keys[NSDownArrowFunctionKey]) {
+    _rotation[0] -= 0.1f;
+  }
+
+
+//  _rotation += 0.01f;
 }
 
 // Called whenever view changes orientation or layout is changed
