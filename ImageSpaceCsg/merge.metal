@@ -10,10 +10,10 @@ using namespace metal;
 // TODO: support more boolean operations
 
 kernel void mergeDepthBuffers(// inputs
-                     depth2d<float, access::read> shapeABackTexture [[texture(0)]],
-                     depth2d<float, access::read> shapeAFrontTexture [[texture(1)]],
-                     depth2d<float, access::read> shapeBBackTexture [[texture(2)]],
-                     depth2d<float, access::read> shapeBFrontTexture [[texture(3)]],
+                     depth2d<float, access::read> shapeBBackTexture [[texture(0)]],
+                     depth2d<float, access::read> shapeBFrontTexture [[texture(1)]],
+                     depth2d<float, access::read> shapeABackTexture [[texture(2)]],
+                     depth2d<float, access::read> shapeAFrontTexture [[texture(3)]],
                      // outputs
                      texture2d<float, access::write> outBackTexture [[texture(4)]],
                      texture2d<float, access::write> outFrontTexture [[texture(5)]],
@@ -24,8 +24,10 @@ kernel void mergeDepthBuffers(// inputs
 
   float black = 0.0f;
   float white = 1.0f;
-  float boxBack = shapeABackTexture.read(gid);
-  float cylBack = shapeBBackTexture.read(gid);
+  float boxBackOrig = shapeABackTexture.read(gid);
+  float boxBack = (boxBackOrig == black) ? white : boxBackOrig;
+  float cylBackOrig = shapeBBackTexture.read(gid);
+  float cylBack = (cylBackOrig == black) ? white : cylBackOrig;
   
   float boxFront = shapeAFrontTexture.read(gid);
   float cylFront = shapeBFrontTexture.read(gid);
@@ -34,14 +36,17 @@ kernel void mergeDepthBuffers(// inputs
   float split2;
   float newlyCut;
   
+
   // Merge Back
   maskBack = (cylBack > boxBack) ? cylBack : white;
   maskFront = (cylBack > boxFront) ? white : cylBack;
   
   split2 = min(maskBack, maskFront);
   newlyCut = (split2 < 1) ? black : maskBack;
-  
-  outBackTexture.write((newlyCut < 1) ? cylBack : black, gid);
+
+  float bar = (newlyCut < 1) ? cylBack : white;
+
+  outBackTexture.write(bar, gid);
   
   
   // Merge Front
@@ -49,10 +54,10 @@ kernel void mergeDepthBuffers(// inputs
   maskFront = (cylFront > boxFront) ? white : cylFront;
   
   split2 = max(maskBack, cylFront);
-  newlyCut = (split2 < 1) ? max(boxBack, cylFront) : black;
+  newlyCut = (split2 < 1) ? max(boxBack, cylFront) : white;
   
   float split = min(maskFront, maskBack);
-  float silhouette = (split < 1) ? cylFront : black;
+  float silhouette = (split < 1) ? cylFront : white;
   
   float foo = max(silhouette, newlyCut);
   float finally = min(foo, maskFront);

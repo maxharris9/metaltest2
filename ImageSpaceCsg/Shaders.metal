@@ -36,80 +36,14 @@ vertex ColorInOut combinerVert(device vertex_t* vertex_array [[ buffer(0) ]],
   return out;
 }
 
-/*
-fragment float4 combinerFragFront(ColorInOut in [[stage_in]],
-                       depth2d<float> boxBackDepth [[ texture(0) ]],
-                       depth2d<float> boxFrontDepth [[ texture(1) ]],
-                       depth2d<float> cylinderBackDepth [[ texture(2) ]],
-                       depth2d<float> cylinderFrontDepth [[ texture(3) ]])
-{
-  constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
-
-  float4 black = float4(0.0,0.0,0.0,1.0);
-  float4 white = float4(1.0,1.0,1.0,1.0);
-
-  float4 boxBack = boxBackDepth.sample(texSampler, in.texCoord);
-  float4 cylBack = cylinderBackDepth.sample(texSampler, in.texCoord);
-
-  float4 boxFront = boxFrontDepth.sample(texSampler, in.texCoord);
-  float4 cylFront = cylinderFrontDepth.sample(texSampler, in.texCoord);
-
-  float4 maskBack = (cylBack.r <= boxBack.r) ? white : cylBack;
-  float4 maskFront = (cylFront.r > boxFront.r) ? white : cylFront;
-
-  float4 split2 = max(maskBack, cylFront);
-  float4 newlyCut = (split2.r < 1) ? max(boxBack, cylFront) : black;
-
-  float4 split = min(maskFront, maskBack);
-  float4 silhouette = (split.r < 1) ? cylFront : black;
-
-  float4 foo = max(silhouette, newlyCut);
-  float4 finally = min(foo, maskFront);
-  
-  //float4 cylFrontNormals = cylinderFrontNormals.sample(texSampler, in.texCoord);
-
-  return (pow(finally, 90) - 0.6); // + cylFrontNormals/9;
-}
-
-fragment float4 combinerFragBack(ColorInOut in [[stage_in]],
-                                depth2d<float> boxBackDepth [[ texture(0) ]],
-                                depth2d<float> boxFrontDepth [[ texture(1) ]],
-                                depth2d<float> cylinderBackDepth [[ texture(2) ]],
-                                depth2d<float> cylinderFrontDepth [[ texture(3) ]])
-{
-constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
-
-  float4 black = float4(0.0,0.0,0.0,1.0);
-  float4 white = float4(1.0,1.0,1.0,1.0);
-
-  float4 boxBack = boxBackDepth.sample(texSampler, in.texCoord);
-  float4 cylBack = cylinderBackDepth.sample(texSampler, in.texCoord);
-
-  float4 boxFront = boxFrontDepth.sample(texSampler, in.texCoord);
-  //  float4 cylFront = cylinderFrontDepth.sample(texSampler, in.texCoord);
-
-  float4 maskBack = (cylBack.r > boxBack.r) ? cylBack : white;
-  float4 maskFront = (cylBack.r > boxFront.r) ? white : cylBack;
-
-  float4 split2 = min(maskBack, maskFront);
-  float4 newlyCut = (split2.r < 1) ? black : maskBack;
-
-
-  float4 foo = (newlyCut.r < 1) ? cylBack : black;
-
-  return (pow(foo, 90) - 0.6);
-}
-*/
-
-
 fragment float4 toScreenFrag(ColorInOut in [[stage_in]],
                              depth2d<float> sceneDepthBack [[ texture(0) ]],
                              depth2d<float> sceneDepthFront [[ texture(1) ]])
 {
   constexpr sampler texSampler(min_filter::linear, mag_filter::linear);
-  // float4 sceneBack = sceneDepthBack.sample(texSampler, in.texCoord);
+  float4 sceneBack = sceneDepthBack.sample(texSampler, in.texCoord);
   float4 sceneFront = sceneDepthFront.sample(texSampler, in.texCoord);
-  // float4 finally = min(sceneBack, sceneFront);
+  float4 finally = min(sceneBack, sceneFront);
   
-  return (pow(sceneFront, 90) - 0.6);
+  return (pow(sceneFront, 90) - 0.1);
 }

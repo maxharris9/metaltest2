@@ -88,10 +88,6 @@ static const float qQuadVertices[] =
   matrixState->modelview_projection_matrix = mvpMatrix;
 }
 
-- (void)renderFoo:(uint8_t)_constantDataBufferIndex encoder:(id <MTLRenderCommandEncoder>)renderEncoder withTextures:(NSArray *)textures
-{
-}
-
 - (void)render:(uint8_t)_constantDataBufferIndex encoder:(id <MTLRenderCommandEncoder>)renderEncoder withTextures:(NSArray *)textures
 {
   if (_vertexCount > 0)

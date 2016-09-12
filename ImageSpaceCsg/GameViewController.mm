@@ -262,13 +262,13 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
   NSError *error;
     
-  MDLMesh *boxModel = [MDLMesh newBoxWithDimensions:(vector_float3){1,10,4}
+  MDLMesh *boxModel = [MDLMesh newBoxWithDimensions:(vector_float3){5,10,4}
                                            segments:(vector_uint3){1,1,1}
                                        geometryType:MDLGeometryTypeTriangles
                                       inwardNormals:NO
                                           allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
       
-  MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:1.5
+  MDLMesh *cylinderModel = [MDLMesh newCylinderWithHeight:5.5
                                                     radii:(vector_float2){4,4}
                                            radialSegments:50
                                          verticalSegments:1
@@ -320,23 +320,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   if (!_pipelineStateFront) {
     NSLog(@"Failed to created pipeline state, error %@", error);
   }
-
-//  // Create a reusable pipeline state
-//  MTLRenderPipelineDescriptor *pipelineStateBackDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-//  pipelineStateBackDescriptor.label = @"BackPipeline";
-//  pipelineStateBackDescriptor.sampleCount = _view.sampleCount;
-//  pipelineStateBackDescriptor.vertexFunction = vertexProgram;
-//  pipelineStateBackDescriptor.fragmentFunction = fragmentProgramBack;
-//  pipelineStateBackDescriptor.vertexDescriptor = vertexDescriptor;
-//  pipelineStateBackDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
-//  pipelineStateBackDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
-//  pipelineStateBackDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
-//  
-//  error = NULL;
-//  _pipelineStateBack = [_device newRenderPipelineStateWithDescriptor:pipelineStateBackDescriptor error:&error];
-//  if (!_pipelineStateBack) {
-//    NSLog(@"Failed to created pipeline state, error %@", error);
-//  }
 
   MTLTextureDescriptor* textureDesc = [[MTLTextureDescriptor alloc] init];
   textureDesc.textureType = MTLTextureType2D;
@@ -421,10 +404,10 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
     [self _mergeDepthBuffers:@[
                                 // inputs
-                                _gBufferBoxBack.depthTexture,
-                                _gBufferBoxFront.depthTexture,
                                 _gBufferConeBack.depthTexture,
                                 _gBufferConeFront.depthTexture,
+                                _gBufferBoxBack.depthTexture,
+                                _gBufferBoxFront.depthTexture,
                                 // outputs
                                 _mergeScratchTextures[_scratchTextureIndex],
                                 _mergeScratchTextures[_scratchTextureIndex+1]
@@ -438,8 +421,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                                 _gBufferCylinderBack.depthTexture,
                                 _gBufferCylinderFront.depthTexture,
                                 // outputs
-                                _mergeScratchTextures[_scratchTextureIndex],
-                                _mergeScratchTextures[_scratchTextureIndex+1]
+                                _mergeScratchTextures[_scratchTextureIndex+2],
+                                _mergeScratchTextures[_scratchTextureIndex+3]
                               ]
     ];
     
@@ -450,8 +433,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     [_quad render:_constantDataBufferIndex
           encoder:renderEncoder
      withTextures:@[ // these get fed into Shaders.metal/cubeFrag()
-                     _mergeScratchTextures[_scratchTextureIndex],
-                     _mergeScratchTextures[_scratchTextureIndex+1]
+                     _mergeScratchTextures[_scratchTextureIndex+2],
+                     _mergeScratchTextures[_scratchTextureIndex+3]
                    ]
     ];
     [renderEncoder popDebugGroup];
