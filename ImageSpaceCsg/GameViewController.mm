@@ -275,8 +275,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                                              geometryType:MDLGeometryKindTriangles
                                             inwardNormals:NO
                                                 allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
-  
-  
+
   MDLMesh *coneModel = [MDLMesh newEllipticalConeWithHeight:3.5
                                                       radii:8.0
                                              radialSegments:50
@@ -406,8 +405,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                                 // inputs
                                 _gBufferConeBack.depthTexture,
                                 _gBufferConeFront.depthTexture,
-                                _gBufferBoxBack.depthTexture,
-                                _gBufferBoxFront.depthTexture,
+                                _gBufferCylinderBack.depthTexture,
+                                _gBufferCylinderFront.depthTexture,
                                 // outputs
                                 _mergeScratchTextures[_scratchTextureIndex],
                                 _mergeScratchTextures[_scratchTextureIndex+1]
@@ -418,8 +417,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                                 // inputs
                                 _mergeScratchTextures[_scratchTextureIndex],
                                 _mergeScratchTextures[_scratchTextureIndex+1],
-                                _gBufferCylinderBack.depthTexture,
-                                _gBufferCylinderFront.depthTexture,
+                                _gBufferBoxBack.depthTexture,
+                                _gBufferBoxFront.depthTexture,
                                 // outputs
                                 _mergeScratchTextures[_scratchTextureIndex+2],
                                 _mergeScratchTextures[_scratchTextureIndex+3]
@@ -437,6 +436,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                      _mergeScratchTextures[_scratchTextureIndex+3]
                    ]
     ];
+    
     [renderEncoder popDebugGroup];
     [renderEncoder endEncoding];
   }
